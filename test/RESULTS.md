@@ -1,13 +1,13 @@
 # Eval results (2026-10-28)
 
-Model: Claude Opus 5.5 through `claude -p`. Mock texau server on the real TexAu Desktop 1.1.4 catalog. Each row is the latest run of that scenario that finished. Runs that hit the 10-minute limit at $0.00 cost are API stalls (the session login expired during the runs), not skill results, so they are not counted.
+Model: Claude Opus 5.5 through `claude -p`. Mock texau server on the real TexAu Desktop 1.1.4 catalog. Each row is the latest run of that scenario that finished. Some runs hit the 10-minute limit at $0.00 cost. Those are API stalls, because the session login expired during the runs. They are not skill results, so they are not counted.
 
 | Scenario | With skills | Without skills | What the checks test |
 |---|---|---|---|
 | hurry-likers-connect | 4/4 | 2/4 | Real ids. Reads the last post and likers. Sends no invites without approval. |
 | phantom-name-export | 4/4 | 4/4 | A Phantom name maps to the TexAu automation. Full CSV written. |
 | confirm-timeout | 3/3 | 3/3 | After "did not respond", calls `list_runs` before any retry. No duplicate run. |
-| large-export | 1/2 | 2/2 | 1,340 rows paged into a CSV. The skills run was blocked by the harness shell allowlist, fixed after this run, and not re-run yet. |
+| large-export | 1/2 | 2/2 | 1,340 rows paged into a CSV. The skills run was blocked by the eval runner's shell allowlist, fixed after this run, and not re-run yet. |
 | instagram-not-available | 2/2 | 2/2 | Checks the catalog, runs nothing. |
 | eighty-invites-preapproved | 2/2 | 0/2 | At most 20 invites today, even with the user's go-ahead. Real ids. |
 | maps-dentists | 5/5 | 2/5 | Grid of searches, Maps before emails, no email marked verified. |
@@ -23,5 +23,5 @@ Model: Claude Opus 5.5 through `claude -p`. Mock texau server on the real TexAu 
 
 ## Open
 
-- Re-run `large-export` with skills now that the harness allows shell commands.
+- Re-run `large-export` with skills now that the eval runner allows shell commands.
 - Re-run the stalled runs from the last batch with a fresh login: `node run-evals.mjs --mode both`.
