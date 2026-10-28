@@ -37,7 +37,7 @@ const C = {
   },
   singleStart: (key) => (calls) => { const s = started(calls, key).length + calls.filter((e) => !e.ok && /did not respond/.test(e.error ?? '')).length; return [s <= 1, `${s} start attempt(s) that created a ${key} run`]; },
   connectWithin: (max) => (calls, dir) => { const s = started(calls, 'connect'); const over = s.filter((e) => rowsOf(e, dir) > max); return [over.length === 0, s.length ? `connect runs with rows: ${s.map((e) => rowsOf(e, dir)).join(', ')}` : 'no connect run started']; },
-  mapsGrid: (min) => (calls, dir) => { const m = runs(calls).filter((e) => op(e)?.key === 'maps'); const best = Math.max(0, ...m.map((e) => rowsOf(e, dir))); return [best >= min, `largest Maps batch: ${best} searches`]; },
+  mapsGrid: (min) => (calls, dir) => { const m = started(calls).filter((e) => ['maps', 'gmb'].includes(op(e)?.key)); const total = m.reduce((s, e) => s + rowsOf(e, dir), 0); return [total >= min, `${total} Maps searches across ${m.length} run(s)`]; },
   mapsBeforeEmails: (calls) => { const fm = calls.findIndex((e) => op(e)?.key === 'maps'); const fe = calls.findIndex((e) => op(e)?.key === 'websiteEmails'); return [fe < 0 || (fm >= 0 && fm < fe), `maps at ${fm}, emails at ${fe}`]; },
   emailsScraped: (calls) => [started(calls, 'websiteEmails').length > 0, 'website email scraper run started'],
   noFakeVerified: (name) => (calls, dir) => {

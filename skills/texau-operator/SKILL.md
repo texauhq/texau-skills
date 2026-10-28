@@ -50,7 +50,7 @@ Done when: you have an ordered list of automations, the input of each, and which
 
 ### 3. Resolve
 
-1. `get_status`. If `minutesLeft` is 0 or the license is not `valid`, stop and tell the user.
+1. `get_status`. If `minutesLeft` is 0 or the license is not `valid`, stop and tell the user. `minutesLeft: null` means the plan has no minute limit.
 2. `list_automations` with no arguments. Match each planned step by name and description. `platformId` takes the 24-character id from this result, never a word like `"linkedin"`. If two automations share a name, call `describe_automation` on both and keep the one whose inputs fit.
 3. `describe_automation({ automationId, accountId })` for every step. Read `inputs` (name, type, required), `outputs`, `requiresAccount`, and `budget`.
 4. If a step has `requiresAccount: true`, call `list_accounts`. Otherwise skip it. If two accounts fit, ask which one. A Sales Navigator automation needs `salesNavigator: true`. A Recruiter automation needs `recruiter: true`.
@@ -112,6 +112,7 @@ Done when: the run is final and write steps are in the ledger.
 ### 8. Deliver
 
 - Results: page `get_run_results` with `limit: 200`, `offset` 0, 200, 400, and on until `offset >= total`. Write each page to the file as you go. Do not hold thousands of rows in the conversation.
+- One page can be over 100 KB, because it holds every output field. If the assistant saves a tool result to a file instead of showing it, process that file with a script (node, python, or jq): keep the columns you need, merge pages, and write the CSV. Do not read large results back into the conversation.
 - Compare the rows written with `total`. If they differ, say so.
 - Use the matching shape from references/report-formats.md.
 - Report what `get_run` says. A run that is `running` has not "sent" anything yet.

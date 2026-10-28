@@ -38,3 +38,5 @@ Evidence comes from three sources. I read `frontend/packages/mcp` and `electron/
 ## What works well
 
 Token-cheap surface (~1.3k tokens for 13 tools). Preview + single-use previewId + CSV fingerprint + proxy check before confirm. Browser Origin refusal and token auth. Social platforms cannot run unpaced. Activity log never stores argument values. CSV path limited to .csv to stop file exfiltration.
+15. Result pages are too large for an assistant. `get_run_results` returns every output field as pretty-printed JSON. One 200-row page of LinkedIn Connections Export is 128 KB, and Sales Navigator Lead Scraper has 182 fields. Fix: add a `fields` argument, return compact JSON, and default to the fields that `describe_automation` marks as key.
+16. `describe_automation` drops `choices` for select inputs. Confirmed on 1.1.4: `reactionType`, `twExtractionMode`, `mode`, `crawlDepth`, and `sortOrder` show no allowed values.

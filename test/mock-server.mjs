@@ -28,8 +28,8 @@ const schemas = {
   list_runs: z.object({ limit: limit(100), offset }),
   get_run: runRef,
   get_run_results: z.object({ runId: id, limit: z.number().int().min(1).optional(), offset }),
-  run_automation: z.object({ automationId: id, accountId: id.optional(), inputs: z.record(z.unknown()), runName: z.string().max(200).optional(), confirm: z.boolean().optional(), previewId: z.string().optional() }),
-  run_batch: z.object({ automationId: id, accountId: id.optional(), rows: z.array(z.record(z.unknown())).max(500).optional(), csvPath: id.optional(), columnMap: z.record(z.string()).optional(), pace, runName: z.string().max(200).optional(), confirm: z.boolean().optional(), previewId: z.string().optional() }),
+  run_automation: z.object({ automationId: id, accountId: id.optional(), inputs: z.record(z.string(), z.unknown()), runName: z.string().max(200).optional(), confirm: z.boolean().optional(), previewId: z.string().optional() }),
+  run_batch: z.object({ automationId: id, accountId: id.optional(), rows: z.array(z.record(z.string(), z.unknown())).max(500).optional(), csvPath: id.optional(), columnMap: z.record(z.string(), z.string()).optional(), pace, runName: z.string().max(200).optional(), confirm: z.boolean().optional(), previewId: z.string().optional() }),
   pause_run: runRef,
   resume_run: runRef,
   cancel_run: runRef,
@@ -133,6 +133,7 @@ function runTool(tool, args) {
   if (!key || key !== keyOf(args)) bad('No matching preview: it expired, was already used, or the arguments changed. Call again without confirm to preview.');
   previews.delete(args.previewId);
   const run = startRun(op, args, rows.length);
+  run.inputs = mapped;
   if (scenario.faults?.confirmTimeout && op.key === scenario.faults.confirmTimeout && !scenario._timedOut) {
     scenario._timedOut = true;
     throw new ToolError(NO_RESPONSE); // the run exists, but the agent only sees a timeout
@@ -157,7 +158,7 @@ const handlers = {
   get_run: ({ runId }) => view(runs.find((r) => r.runId === runId) ?? bad('No run with that id.')),
   get_run_results: ({ runId, limit = 50, offset = 0 }) => {
     const run = runs.find((r) => r.runId === runId) ?? bad('No run with that id.');
-    const all = rowsFor(run.key, run.resultTotal);
+    const all = rowsFor(run.key, run.resultTotal, run.inputs);
     return { total: all.length, rows: all.slice(offset, offset + Math.min(limit, 200)) };
   },
   run_automation: (a) => runTool('run_automation', a),

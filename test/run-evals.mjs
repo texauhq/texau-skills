@@ -32,7 +32,7 @@ function runOne(ev, mode) {
   if (ev.ledger === 'seed') seedLedger(ledger);
   fs.writeFileSync(path.join(dir, '.mcp-eval.json'), JSON.stringify({ mcpServers: { texau: { command: process.execPath, args: [path.join(here, 'mock-server.mjs')], env: { MOCK_SCENARIO: path.join(dir, '.scenario.json'), MOCK_LOG: log } } } }));
   const args = ['-p', ev.prompt, '--mcp-config', path.join(dir, '.mcp-eval.json'), '--strict-mcp-config', '--setting-sources', 'project',
-    '--allowedTools', 'mcp__texau', 'Read', 'Write', 'Edit', 'Skill', 'Glob', 'Bash(node:*)', '--output-format', 'stream-json', '--verbose'];
+    '--allowedTools', 'mcp__texau', 'Read', 'Write', 'Edit', 'Skill', 'Glob', 'Grep', 'Bash', '--output-format', 'stream-json', '--verbose'];
   if (model) args.push('--model', model);
   return new Promise((resolve) => {
     const t0 = Date.now();

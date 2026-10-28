@@ -58,9 +58,10 @@ const FIRST = ['Priya', 'Marcus', 'Elena', 'Tom', 'Aisha', 'Ken', 'Sofia', 'Raj'
 const TITLES = ['Head of Growth', 'Founder', 'VP Sales', 'Marketing Manager', 'Student', 'Recruiter', 'CEO', 'SDR'];
 const COMPANIES = ['Brightline', 'Kitebox', 'Northwind', 'Acme', 'State University', 'TalentCo', 'Fieldwork', 'Cloudly'];
 
-// A value for one output field of row i, chosen by the field name.
-function value(field, i, key) {
-  const first = FIRST[i % FIRST.length], slug = `${first.toLowerCase()}-${i}`;
+// A value for one output field of row i, chosen by the field name. `n` is the person index, so
+// two inputs can share some people (followers of two competitors overlap by half).
+function value(field, i, key, n = i) {
+  const first = FIRST[n % FIRST.length], slug = `${first.toLowerCase()}-${n}`;
   const f = field.toLowerCase();
   if (key === 'maps' || key === 'gmb') {
     if (f === 'companyname') return `Smile Dental ${i}`;
@@ -103,8 +104,23 @@ function value(field, i, key) {
   return '';
 }
 
-export function rowsFor(key, total) {
+export function rowsFor(key, total, inputs = []) {
   const op = AUTOMATIONS.find((a) => a.key === key);
   const fields = op ? op.outputs.map((o) => o.name) : ['liProfileUrl', 'fullName', 'firstName', 'headline'];
-  return Array.from({ length: total }, (_, i) => Object.fromEntries(fields.map((f) => [f, value(f, i, key)])));
+  const per = inputs.length > 1 ? Math.ceil(total / inputs.length) : total;
+  return Array.from({ length: total }, (_, i) => {
+    const j = Math.min(Math.floor(i / per), Math.max(0, inputs.length - 1));
+    const n = inputs.length > 1 ? (i % per) + j * Math.floor(per / 2) : i;
+    const input = inputs[j] ?? {};
+    const row = Object.fromEntries(fields.map((f) => [f, value(f, i, key, n)]));
+    // Echo the input that produced the row, as the real app does in its input* fields.
+    for (const f of fields) {
+      if (!/^inputs?[A-Z]/.test(f)) continue;
+      const norm = (x) => x.toLowerCase().replace('twitter', 'tw').replace('linkedin', 'li').replace('comany', 'company');
+      const want = norm(f.replace(/^inputs?/, ''));
+      const k = Object.keys(input).find((x) => norm(x) === want || want.endsWith(norm(x)) || norm(x).endsWith(want));
+      if (k) row[f] = input[k];
+    }
+    return row;
+  });
 }
