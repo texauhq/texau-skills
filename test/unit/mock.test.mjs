@@ -16,10 +16,12 @@ async function connect(scenario = {}) {
   return { c, call, dir };
 }
 
-test('exposes the same 13 tools as the real shim', async () => {
+test('exposes the same 13 tools as the real shim, and the real catalog', async () => {
   const { c } = await connect();
   const { tools } = await c.listTools();
   assert.equal(tools.length, 13);
+  const call = async (name) => JSON.parse((await c.callTool({ name, arguments: {} })).content[0].text);
+  assert.equal((await call('list_automations')).length, 113);
   await c.close();
 });
 
@@ -27,10 +29,10 @@ test('preview then confirm starts a run; a changed confirm is refused', async ()
   const { c, call } = await connect();
   const ops = (await call('list_automations')).json;
   const likers = ops.find((o) => o.name === 'LinkedIn Post Likers Export');
-  const args = { automationId: likers.id, accountId: 'acc_li_01', inputs: { postUrl: 'https://x' } };
+  const args = { automationId: likers.id, accountId: 'acc_li_01', inputs: { liPostUrl: 'https://x' } };
   const p = (await call('run_automation', args)).json;
   assert.ok(p.previewId);
-  assert.ok((await call('run_automation', { ...args, inputs: { postUrl: 'https://y' }, confirm: true, previewId: p.previewId })).err);
+  assert.ok((await call('run_automation', { ...args, inputs: { liPostUrl: 'https://y' }, confirm: true, previewId: p.previewId })).err);
   const started = (await call('run_automation', { ...args, confirm: true, previewId: p.previewId })).json;
   const res = (await call('get_run_results', { runId: started.runId, limit: 500 })).json;
   assert.equal(res.total, 87);
@@ -41,7 +43,7 @@ test('preview then confirm starts a run; a changed confirm is refused', async ()
 test('confirm timeout fault creates the run but reports no response', async () => {
   const { c, call } = await connect({ faults: { confirmTimeout: 'postLikers' } });
   const likers = (await call('list_automations')).json.find((o) => o.name === 'LinkedIn Post Likers Export');
-  const args = { automationId: likers.id, accountId: 'acc_li_01', inputs: { postUrl: 'https://x' } };
+  const args = { automationId: likers.id, accountId: 'acc_li_01', inputs: { liPostUrl: 'https://x' } };
   const p = (await call('run_automation', args)).json;
   const r = await call('run_automation', { ...args, confirm: true, previewId: p.previewId });
   assert.ok(r.err);
@@ -54,10 +56,10 @@ test('csvPath batches count rows and Sales Navigator needs access', async () => 
   const { c, call, dir } = await connect();
   const ops = (await call('list_automations')).json;
   const csv = path.join(dir, 'g.csv');
-  fs.writeFileSync(csv, 'query,location\ndentist,Lincoln Park Chicago\n"dental clinic",Loop Chicago\n');
-  const maps = ops.find((o) => o.name === 'Google Maps Extractor');
+  fs.writeFileSync(csv, 'search\ndentist Lincoln Park Chicago\n"dental clinic, Loop Chicago"\n');
+  const maps = ops.find((o) => o.name === 'Google Maps Search Export');
   assert.equal((await call('run_batch', { automationId: maps.id, csvPath: csv })).json.rowCount, 2);
   const sn = ops.find((o) => o.name === 'Sales Navigator Lead Search Export');
-  assert.match((await call('run_automation', { automationId: sn.id, accountId: 'acc_li_01', inputs: { searchUrl: 'u' } })).text, /access/);
+  assert.match((await call('run_automation', { automationId: sn.id, accountId: 'acc_li_01', inputs: { snLeadSearchUrl: 'u' } })).text, /access/);
   await c.close();
 });

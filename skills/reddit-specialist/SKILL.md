@@ -1,53 +1,69 @@
 ---
 name: reddit-specialist
-description: Use when the user wants Reddit data through TexAu Desktop. Covers subreddit research, pain points, people asking for a tool, brand or keyword mentions, commenters on a thread, or a user's comment history.
+description: Use when the user wants Reddit research next to a TexAu workflow. Covers subreddit research, pain points, people asking for a tool, brand or competitor mentions, and customer language for copy.
 ---
 
-# Reddit research and social listening
+# Reddit research
 
-**REQUIRED:** Follow texau-operator.
+**REQUIRED:** texau-operator for any TexAu step that follows.
 
-## Overview
+TexAu Desktop 1.1.4 has no Reddit automations. Call `list_automations` first, because a newer build can add them. If there are none, do the research with the assistant's own web tools on public Reddit pages, and say so once. This skill only reads. It never posts, comments, votes, or drafts replies for the user to post at scale. Reddit bans accounts for promotion.
 
-TexAu reads Reddit. It does not post or comment there, and you do not draft auto-replies. Reddit bans accounts for promotion. The value is in what people say: pain, requests, and the words they use.
+## Reading Reddit without TexAu
 
-## Automations
+Public JSON endpoints return the same data as the pages. Fetch them with the assistant's web fetch tool:
 
-Resolve each name with `list_automations`.
-
-- Subreddits and posts: "Reddit SubReddit Search Export", "SubReddit Posts Search Export", "Reddit Posts Search Export", "Reddit Trends Export"
-- People: "Reddit Post Commenters Export", "Reddit User Comments Scraper", "Reddit User Comments Search Export", "Reddit User Search Export"
-- Domains: "Reddit Domain Search Export"
-
-## Playbooks
-
-| Goal | Steps |
+| Need | URL |
 |---|---|
-| Find the audience | Search subreddits by topic. Keep 5 to 15 with real activity. Show the list to the user. |
-| Pain-point mining | Pull top and recent posts from those subreddits. Label each post with one theme (below). Count themes. Quote the 3 strongest posts per theme with links. |
-| Solution requests (leads) | Search posts for "recommend", "alternative to", "looking for a tool", "anyone use", plus the category. Pull commenters of the best threads. |
-| Brand and competitor mentions | Search posts for each brand name. Compare volume and sentiment per brand. |
-| Domain mentions | Reddit Domain Search Export on the user's or a competitor's domain. |
-| Person research | Reddit User Comments Scraper on one username. Summarize topics. Do not build a profile of a private person beyond what the user needs for the task. |
+| Search one subreddit | `https://www.reddit.com/r/<sub>/search.json?q=<query>&restrict_sr=1&sort=new&t=year&limit=100` |
+| Search all of Reddit | `https://www.reddit.com/search.json?q=<query>&sort=relevance&t=year&limit=100` |
+| Top posts of a subreddit | `https://www.reddit.com/r/<sub>/top.json?t=year&limit=100` |
+| A thread with comments | `https://www.reddit.com/r/<sub>/comments/<id>.json` |
+| Find subreddits | `https://www.reddit.com/subreddits/search.json?q=<topic>&limit=25` |
 
-## Theme labels
+Fetch slowly, one request every few seconds. If Reddit blocks the request, tell the user, and offer the web search tool with `site:reddit.com <query>` instead.
 
-Use these labels, after GummySearch: solution request, pain or anger, advice request, money talk, idea, opportunity. One label per post. Add `other` instead of inventing a new one.
+## Stages
 
-## Output
+### 1. Audience
 
-A short report plus a CSV. The report has the theme counts, the top quotes with links, and the exact phrases people use. The phrases become landing page and ad copy. Reddit caps a listing at about 1,000 items. If a search returns that many, tell the user the list is cut off.
+Find 5 to 15 subreddits for the topic. Keep ones with posts in the last 30 days and more than a few comments per post. Show the list with subscriber counts. Do not mix audiences (founders and students) in one count.
 
-## Monitoring
+Done when: the user agrees on the subreddit list, or says "use your list".
 
-TexAu has no schedule. To monitor, run the same search on request and compare with the last run by post id. Report only new posts.
+### 2. Collect
 
-## Common mistakes
+| Goal | Query pattern |
+|---|---|
+| Pain points | Top posts of the year, plus searches for "frustrated", "hate", "problem with", "<category> sucks" |
+| Solution requests (leads) | "recommend", "alternative to", "looking for a tool", "anyone use", "what do you use for" + category |
+| Brand and competitor mentions | Each brand name, in quotes |
+| Money talk | "pricing", "worth it", "too expensive", "cancelled" + category |
 
-- Drafting promotional replies for the user to post at scale.
-- Treating upvotes as volume. Count posts and distinct authors.
-- Mixing subreddits with different audiences in one theme count.
+Save every post to `reddit_posts.csv` with `postUrl`, `subreddit`, `title`, `author`, `score`, `num_comments`, `createdAt`, `text`. Listings stop at about 1,000 items. If a search hits that, say the list is cut off.
 
-## Deliverable
+Done when: the CSV exists and each query's row count is reported.
 
-Deliver the research brief from texau-operator/references/report-formats.md, plus a CSV of posts with `postUrl`, `subreddit`, `theme`, `quote`, `score`, `createdAt`. Done when every quote has a link.
+### 3. Label
+
+One label per post: solution request, pain or anger, advice request, money talk, idea, opportunity, other. Count by label, per subreddit. Quote the 3 strongest posts per label, with links.
+
+### 4. Turn it into action
+
+- Copy: list the exact phrases people use for the problem. These go into landing page, ad, and outreach copy.
+- Leads: Reddit usernames are not contact data. For solution requests, record the company or role that the poster states. Leave it empty if the post names none. Then find the company with linkedin-specialist or google-web-research. Never try to unmask an anonymous user.
+- Competitors: compare mention counts and the share of negative posts per brand, over the same window.
+
+## Deliver
+
+The research brief in texau-operator/references/report-formats.md, plus `reddit_posts.csv` with a `label` and `quote` column.
+
+## Named mistakes
+
+| Mistake | Do instead |
+|---|---|
+| Drafting promotional replies for the user to post | Read only. Suggest the user join threads manually where they can help. |
+| Treating upvotes as volume | Count posts and distinct authors |
+| One angry post quoted as a trend | Report counts with the sample size |
+| Profiling a private person from their comment history | Only aggregate patterns, no personal dossiers |
+| Claiming TexAu scraped Reddit | Say the assistant's web tools read public pages |

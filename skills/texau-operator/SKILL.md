@@ -13,6 +13,7 @@ Every other TexAu skill uses this one. Read it fully before the first texau tool
 
 | File | Use it for |
 |---|---|
+| references/desktop-catalog.md | Every TexAu Desktop automation: inputs, key outputs, default limits, and which ones write. Read from a real build. |
 | references/chain-library.md | Proven multi-step chains, warm to cold, with PhantomBuster names |
 | references/phantom-map.md | PhantomBuster Phantom name to TexAu automation |
 | references/report-formats.md | The exact shape of every deliverable: lead CSV, campaign report, research brief, run summary |
@@ -164,6 +165,7 @@ Compare every plan with this table before step 6.
 | 18 | Sales Navigator automation on a normal account | The server refuses it | Check `salesNavigator` in `list_accounts` |
 | 19 | Promising a Phantom TexAu does not have | The user plans around a feature that is missing | phantom-map.md says `none`. Offer the nearest TexAu option. |
 | 20 | Search export far above 1,000 (LinkedIn) or 2,500 (Sales Navigator) results | The export stops at the cap | Split the search by location, seniority, or company size |
+| 21 | Planning with an automation from memory or from the TexAu cloud (V2) catalog | Desktop has a different, smaller catalog | Plan from references/desktop-catalog.md, then resolve with `list_automations` |
 
 ## Testing
 

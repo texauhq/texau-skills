@@ -1,48 +1,76 @@
 ---
 name: google-web-research
-description: Use when the user wants Google search results, company websites, domains, emails from websites, tech stack, tracking pixels, site metadata, or screenshots through TexAu Desktop. Also use to find companies by what their site uses.
+description: Use when the user wants website data through TexAu Desktop: emails, social links, tech stack, ad tools, metadata, or schema. Also use to find companies by what their site uses, and for Google search steps in a TexAu workflow.
 ---
 
-# Google search and website intelligence
+# Website intelligence and search
 
-**REQUIRED:** Follow texau-operator.
+**REQUIRED:** texau-operator.
 
-## Overview
-
-Google finds the companies. The website tells you what they use and who to contact. Run search first, clean to one row per domain, then run the website automations on the domains.
+TexAu Desktop reads websites well: emails, phones, social links, 30+ technology categories, metadata, and schema. It has no Google search automation. For the search step, use the assistant's own web search tool, then pass the domains to TexAu.
 
 ## Automations
 
-Resolve each name with `list_automations`.
+| Automation | Input | Key outputs |
+|---|---|---|
+| Website Email And Social Links Scraper | `companyWebsiteUrl`, `crawlDepth` | `email`, `phones`, `liLinks`, `twLinks`, `fbLinks`, `igLinks`, `ytLinks`, `markdownOutput` |
+| Website Technographic Data Finder | `siteUrl` | `technologies`, `cms`, `ecommerce`, `advertising`, `analytics`, `crm`, `marketingAutomation`, `liveChat`, `scheduling`, `payments`, `companyStage`, `estimatedMonthlyTechSpend`, `buyingSignals` |
+| Website Metadata Extractor | `siteUrl` | title, description, Open Graph fields |
+| Website Schema Extractor | `siteUrl` | JSON-LD schema types |
+| Company Name Cleaner | `companyName` | a clean company name for copy |
 
-- Search: "Google Search Results Extractor"
-- Domain lookup: "Company Website Finder" (company name to domain)
-- Website: "Website Email Scraper", "Website Technographic Data Finder", "Website Tracking Pixel Extractor", "Website Metadata Extractor", "Website Schema Extractor", "Website Screenshot Generator"
+None of them needs an account. Each takes one URL per row, so pass a CSV of domains with `csvPath`.
 
-## Playbooks
+## Stages
 
-| Goal | Steps |
+### 1. Get domains
+
+| Starting point | How |
 |---|---|
-| Companies that use a tool | Search for the tool's footprint, for example `"powered by Shopify" <niche>`. Get domains. Run the technographic finder to confirm the tool. |
-| Sites with no ads tracking | Domains from search or Maps. Run the pixel extractor. Keep sites with no Meta or Google Ads pixel. |
-| Directory and list pages | Search `"top 10 <category> <city>"` or `site:<directory> <category>`. Pull domains from the results. |
-| Company list to domains | Company Website Finder on a CSV of names. Mark rows where the match is unclear. |
-| Contact emails | Website Email Scraper on the domains. Prefer named people over `info@`. |
-| Competitor page snapshot | Metadata, schema, and a screenshot of the competitor home and pricing pages. |
-| SEO and AEO audit inputs | Metadata and schema extractors on the user's pages and 3 competitors. Compare titles, descriptions, and schema types. |
+| The user has a CSV of companies with websites | Use it |
+| A list of company names without websites | The assistant's web search, one query per name. Mark unclear matches in `notes`. |
+| Companies that use a tool | The assistant's web search for the tool's footprint, for example `"powered by Shopify" <niche>` or `"cdn.shopify.com" <niche>` |
+| Local businesses | local-maps-leads gives `websiteUrl` |
+| LinkedIn companies | LinkedIn Company Scraper gives the website |
+| X or YouTube creators | Their bio links (`bioLinks`, channel links) |
 
-## Search query rules
+Say once that the search step uses the assistant's web search, not TexAu. Remove duplicate domains. Drop directories, social sites, marketplaces, and news sites (yelp.com, linkedin.com, facebook.com, amazon.com, medium.com).
 
-- One intent per query. Split "agencies in London or Paris" into two queries.
-- Write the queries to a CSV and run them as one batch.
-- Remove duplicate domains across queries before you run the website steps.
+Done when: `domains.csv` has one row per root domain, with a `siteUrl` column.
 
-## Common mistakes
+### 2. Read the sites
 
-- Running website automations on Google result URLs that are directories, social profiles, or news sites. Filter those domains out first.
-- Treating a footprint search hit as proof. Confirm with the technographic finder.
-- Calling a tech list complete. Detection misses tools that load late or run server-side.
+Run the automation each question needs. Do not run all four by default.
 
-## Deliverable
+| Question | Automation | Rule |
+|---|---|---|
+| Who do I email? | Website Email And Social Links Scraper | Prefer named inboxes over `info@` |
+| Do they run ads? | Technographic | `advertising` empty means "no ads tag found" |
+| What do they sell with? | Technographic | `ecommerce`, `payments`, `cms` |
+| Are they growing? | Technographic | `companyStage`, `estimatedMonthlyTechSpend`, `buyingSignals` |
+| Is their SEO basic? | Metadata, Schema | Missing title or description, no schema |
 
-Deliver the lead list CSV from texau-operator/references/report-formats.md, one row per domain. Put the footprint, tag, or tech that qualified the row in `signal`.
+Done when: each row has the columns its question needs, and failures are listed with the URL.
+
+### 3. Deliver
+
+The lead list CSV in texau-operator/references/report-formats.md, one row per domain. Put the finding that qualified the row in `signal`, with the value ("uses Shopify, no ads tag found").
+
+## Common playbooks
+
+| Goal | Chain |
+|---|---|
+| Tech stack displacement | footprint search > Technographic (confirm the tool) > Email And Social Links |
+| E-commerce with no ads | footprint search for the store platform > Technographic, keep `advertising` empty > Email And Social Links |
+| Competitor teardown | Metadata + Schema + Technographic on the competitor and the user's own site, side by side |
+| SEO and AEO gaps | Metadata + Schema on the user's top pages and 3 competitors. Compare titles, descriptions, schema types. |
+
+## Named mistakes
+
+| Mistake | Do instead |
+|---|---|
+| Running website automations on directory or social URLs | Filter those domains first |
+| A footprint search hit treated as proof | Confirm with the technographic finder |
+| "They have no analytics" as a fact | Detection misses server-side and late-loading tools. Say "not detected". |
+| All four automations on every row | Only the one each question needs |
+| Hiding that search came from the web | Say the search step used the assistant's web search |

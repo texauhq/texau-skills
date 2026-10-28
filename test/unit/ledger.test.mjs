@@ -68,3 +68,10 @@ test('status reports acceptance and reply rates', () => {
   assert.equal(s.acceptanceRate, 25);
   assert.equal(s.people, 4);
 });
+
+test('real TexAu export columns (liProfileUrl) are read', () => {
+  run('campaign-add', '--name', 'c1', '--account', 'acc1', '--steps', 'invite');
+  const r = run('record', '--campaign', 'c1', '--step', 'invite', '--csv', csv('real.csv', ['firstName,liProfileUrl,snProfileUrl', 'Ann,https://www.linkedin.com/in/ann,https://www.linkedin.com/sales/lead/x']));
+  assert.equal(r.recorded, 1);
+  assert.equal(run('exclude', '--account', 'acc1', '--csv', csv('again.csv', ['liProfileUrl', 'https://linkedin.com/in/ann/']), '--out', path.join(dir, 'o.csv')).kept, 0);
+});

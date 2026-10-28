@@ -77,7 +77,7 @@ function resolveAccount(op, accountId) {
   if (!op.requiresAccount) return null;
   if (!accountId) bad('This automation needs an account. Pass accountId (see list_accounts).');
   const acc = ACCOUNTS.find((a) => a.id === accountId && a.platform === op.cookiePlatform) ?? bad('No connected account with that id.');
-  if (op.needsSalesNav && !acc.salesNavigator) bad('That account does not have the access this automation needs.');
+  if ((op.needsSalesNav && !acc.salesNavigator) || (op.needsRecruiter && !acc.recruiter)) bad('That account does not have the access this automation needs.');
   return acc;
 }
 
@@ -151,7 +151,7 @@ const handlers = {
   describe_automation: ({ automationId, accountId }) => {
     const op = findOp(automationId);
     if (accountId && !ACCOUNTS.some((a) => a.id === accountId)) bad('No connected account with that id.');
-    return { inputs: op.inputs, outputs: op.outputs, requiresAccount: op.requiresAccount, cookiePlatform: op.cookiePlatform ?? null, defaultLimits: { perDay: op.budget ?? 500 }, ...(accountId ? { budget: { remainingToday: budgetFor(op), dailyLimit: op.budget ?? 500 } } : {}) };
+    return { inputs: op.inputs, outputs: op.outputs, requiresAccount: op.requiresAccount, cookiePlatform: op.cookiePlatform ?? null, defaultLimits: op.defaultLimits ?? {}, ...(accountId ? { budget: { remainingToday: budgetFor(op), dailyLimit: op.budget ?? 500 } } : {}) };
   },
   list_runs: ({ limit = 20, offset = 0 }) => [...runs].reverse().slice(offset, offset + limit).map(view),
   get_run: ({ runId }) => view(runs.find((r) => r.runId === runId) ?? bad('No run with that id.')),

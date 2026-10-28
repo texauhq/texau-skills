@@ -17,8 +17,8 @@ import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-export const LIMITS = { invite: { day: 20, week: 100 }, message: { day: 50, week: 250 }, visit: { day: 80, week: 400 } };
-const WRITE_KIND = (step) => (step === 'invite' ? 'invite' : step.startsWith('message') || step === 'inmail' ? 'message' : step === 'visit' ? 'visit' : null);
+export const LIMITS = { invite: { day: 20, week: 100 }, message: { day: 50, week: 250 }, like: { day: 40, week: 200 }, follow: { day: 50, week: 300 }, visit: { day: 80, week: 400 } };
+const WRITE_KIND = (step) => (step === 'invite' ? 'invite' : step.startsWith('message') || step === 'inmail' ? 'message' : step === 'like' ? 'like' : step === 'follow' ? 'follow' : step === 'visit' ? 'visit' : null);
 
 export class LedgerError extends Error {
   constructor(code, message, fix) { super(message); this.code = code; this.fix = fix; }
@@ -61,8 +61,9 @@ export function writeCsv(file, headers, rows) {
   const esc = (v) => { const s = v == null ? '' : String(v); return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
   fs.writeFileSync(file, [headers.join(','), ...rows.map((r) => headers.map((h) => esc(r[h])).join(','))].join('\n') + '\n');
 }
-const urlColumn = (headers) => headers.find((h) => /^(profileurl|linkedinurl|url|profile_url|linkedin_url)$/i.test(h))
-  ?? (() => { throw new LedgerError('CSV_NO_URL_COLUMN', `No profile URL column in: ${headers.join(', ')}.`, 'Name the column profileUrl.'); })();
+const URL_COLUMNS = ['profileurl', 'profile_url', 'liprofileurl', 'lipublicprofileurl', 'participantliprofileurl', 'twprofileurl', 'snprofileurl', 'linkedinurl', 'linkedin_url', 'url'];
+const urlColumn = (headers) => URL_COLUMNS.map((c) => headers.find((h) => h.toLowerCase() === c)).find(Boolean)
+  ?? (() => { throw new LedgerError('CSV_NO_URL_COLUMN', `No profile URL column in: ${headers.join(', ')}.`, 'Name the column profileUrl or liProfileUrl.'); })();
 
 const day = (d) => (d ? new Date(`${d}T12:00:00Z`) : new Date());
 const iso = (d) => d.toISOString().slice(0, 10);

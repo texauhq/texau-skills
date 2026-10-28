@@ -1,98 +1,77 @@
 # TexAu skills
 
-Skills that teach an AI assistant to run TexAu Desktop: LinkedIn outreach, lead lists, Google Maps leads, Reddit research, market research, and agency and consulting prospecting. They work in Claude Code, Claude Desktop, Cursor, Codex, and any assistant that reads `SKILL.md` folders and connects to MCP servers.
+Skills that teach an AI assistant to run TexAu Desktop: LinkedIn and X outreach, lead lists, Google Maps leads, website research, Reddit research, market research, and agency and consulting prospecting. They work in Claude Code, Cursor, Codex, Claude Desktop, and any assistant that reads `SKILL.md` folders and connects to MCP servers.
 
-## Set it up in one step
+## Set it up
 
-Open TexAu Desktop. Go to Settings, then Extension, and switch on "Allow AI assistants". Then paste the prompt below into your assistant (Claude Code, Cursor, Codex, or any agent that can run shell commands). It installs the skills and connects TexAu for you.
+Open TexAu Desktop 1.1 or later. Go to Settings, then Extension, and switch on "Allow AI assistants". Then paste this prompt into your assistant (Claude Code, Cursor, Codex, or any agent that can run shell commands):
 
 ```text
-Set up TexAu Desktop for me in this assistant. Do each step, show me what you did, and stop and ask me if a step fails.
+Set up TexAu Desktop for me in this assistant. Run each step, show me the output, and stop if a step fails.
 
-1. Check that TexAu Desktop is installed.
-   - macOS: /Applications/TexAu.app/Contents/MacOS/TexAu
-   - Windows: %LOCALAPPDATA%\Programs\TexAu\TexAu.exe (else search Program Files for TexAu.exe)
-   - Linux: find the TexAu install folder (AppImage mount or /opt/TexAu)
-   The MCP server file is resources/mcp/texau-mcp.cjs inside the install folder.
-   On macOS that is /Applications/TexAu.app/Contents/Resources/mcp/texau-mcp.cjs.
-   If you cannot find either file, ask me to open TexAu, go to Settings > Extension > AI assistants, and paste you the Claude Code command shown there. It holds both paths.
+1. Get the skills. Run: git clone https://github.com/texauhq/texau-skills.git ~/texau-skills
+   If ~/texau-skills exists, run: git -C ~/texau-skills pull
 
-2. Get the skills.
-   Run: gh repo clone texauhq/texau-skills ~/texau-skills
-   If gh is missing, run: git clone https://github.com/texauhq/texau-skills.git ~/texau-skills
-   If ~/texau-skills exists, run git pull inside it instead.
+2. Run the installer with TexAu's own runtime, so Node does not need to be installed:
+   - macOS:   ELECTRON_RUN_AS_NODE=1 /Applications/TexAu.app/Contents/MacOS/TexAu ~/texau-skills/install.mjs
+   - Windows (PowerShell): $env:ELECTRON_RUN_AS_NODE=1; & "$env:LOCALAPPDATA\Programs\TexAu\TexAu.exe" "$HOME\texau-skills\install.mjs"
+   - Linux or a custom folder: node ~/texau-skills/install.mjs --app <TexAu binary> --shim <TexAu folder>/resources/mcp/texau-mcp.cjs
+   If the TexAu binary is not at that path, run node ~/texau-skills/install.mjs instead (Node 20 or later). It searches the standard folders.
 
-3. Install the skills for the assistant you are.
-   - Claude Code: copy every folder in ~/texau-skills/skills/ into ~/.claude/skills/
-   - Codex, Gemini CLI, Copilot CLI and other agents that read ~/.agents/skills: copy them into ~/.agents/skills/
-   - Cursor: copy them into ~/.cursor/skills/. If this Cursor version does not load skills, add each SKILL.md as a rule in ~/.cursor/rules/ instead, named <skill-name>.mdc
-   - Any other assistant: find where it loads skills or rules from and copy them there. Tell me the path you used.
-   Overwrite older copies of the same folders. Leave every other skill alone.
+3. Read the JSON the installer prints.
+   - "test": { "ok": true, "tools": 13 } means TexAu is connected.
+   - If there is an "error" or "fix" field, do what "fix" says, then run the installer again.
 
-4. Connect the TexAu MCP server. Use the two paths from step 1 as <APP> and <SHIM>.
-   - Claude Code: claude mcp add texau -e ELECTRON_RUN_AS_NODE=1 -- "<APP>" "<SHIM>"
-   - Cursor: add this under "mcpServers" in ~/.cursor/mcp.json and keep every other entry:
-     "texau": { "command": "<APP>", "args": ["<SHIM>"], "env": { "ELECTRON_RUN_AS_NODE": "1" } }
-     Back up the file before you edit it.
-   - Codex: add to ~/.codex/config.toml:
-     [mcp_servers.texau]
-     command = "<APP>"
-     args = ["<SHIM>"]
-     env = { ELECTRON_RUN_AS_NODE = "1" }
-   - Claude Desktop: tell me to click "Connect to Claude Desktop" in TexAu (Settings > Extension > AI assistants) and approve the install. Then tell me to upload each folder in ~/texau-skills/skills/ as a skill in Claude Desktop settings.
-   - Other assistants: add a stdio MCP server named texau with the same command, args and env.
-
-5. Test it. Tell me to restart the assistant if it needs a restart to load MCP servers. Then call the texau get_status tool. Expect 13 texau tools and a status with license and minutesLeft.
-   - "TexAu Desktop is not running": ask me to open the app.
-   - "AI assistant access is off": ask me to switch on Settings > Extension > AI assistants.
-   - "does not include AI assistant access": tell me my plan does not include it.
-
-6. Finish with a short summary: the skills you installed, the MCP config file you changed, and the result of get_status. Do not run any automation during setup.
+4. Tell me to restart this assistant. Do not run any TexAu automation during setup.
 ```
 
-Never paste a TexAu token, cookie, or password into the assistant. The setup does not need them.
+The installer finds TexAu, finds which assistants are installed, copies the skills to each one, and adds the texau MCP server to each assistant's configuration. It backs up every configuration file it changes. Then it starts the server the way an assistant does and calls `get_status`. Options: `--clients claude-code,cursor,codex,agents`, `--dry-run`, `--test-only`, `--app` and `--shim`.
+
+Claude Desktop: click "Connect to Claude Desktop" in TexAu (Settings, Extension, AI assistants) and approve the install. Then upload each folder in `skills/` as a skill in Claude Desktop settings.
+
+Never paste a TexAu token, cookie, or password into the assistant. Setup does not need them.
 
 ## Skills
 
 | Skill | Use it for |
 |---|---|
 | texau-operator | Any call to the texau MCP server. All other skills use it. |
-| linkedin-outreach | Connection requests, messages, InMail, follow-up sequences |
-| linkedin-specialist | LinkedIn and Sales Navigator lists from posts, events, groups, companies, jobs |
-| lead-gen-expert | A full lead list: ICP, source, qualify, find emails, deliver to CSV, CRM, or sequencer |
-| local-maps-leads | Google Maps businesses by category and city, reviews, websites |
-| google-web-research | Google search, domains, website emails, tech stack, tracking pixels |
+| linkedin-outreach | Connection requests, messages, sequences over days, "continue my campaigns", replies |
+| linkedin-specialist | LinkedIn, Sales Navigator, and Recruiter lists from posts, companies, jobs, alumni, your network |
+| x-twitter-specialist | X followers, searches, lists, thread joiners, DMs, follows, replies |
+| lead-gen-expert | A full lead list: ICP, source, score, enrich, deliver |
+| local-maps-leads | Google Maps businesses by category and area, reviews, website contacts |
+| google-web-research | Website emails, social links, tech stack, ad tools, metadata, schema |
 | reddit-specialist | Subreddit research, pain points, solution requests, brand mentions |
-| market-research | Competitor briefs, ICP, customer quotes, market maps |
+| market-research | Competitor briefs, ICP, customer quotes, content analysis, market maps |
 | agency-client-acquisition | Agencies that find and pitch clients with an observed problem |
-| consulting-prospecting | Consultants who work a short account list from trigger events |
+| consulting-prospecting | Consultants who work a short account list from dated trigger events |
+
+## Built on the real catalog
+
+`skills/texau-operator/references/desktop-catalog.md` lists all 113 automations in TexAu Desktop 1.1.4, with their inputs, key outputs, default limits, and which ones write. It was read from a running app with `test/read-catalog.mjs`. If a skill names an automation that is not in it, a test fails. TexAu Desktop has no Reddit or Google search automations. For that step, those two skills use the assistant's own read-only web tools, and they say so.
 
 ## PhantomBuster names
 
-You can ask in PhantomBuster terms, for example "run the Post Likers Export Phantom" or "do the competitor posts playbook". `texau-operator` maps each of the 145 public Phantoms to a TexAu automation or chain in `skills/texau-operator/references/phantom-map.md`. 67 map exactly, 12 closely, and 26 as a chain of TexAu runs. 40 have no TexAu equivalent, mostly Instagram, Slack, and Facebook. The skills run on the texau MCP server only. They do not call PhantomBuster.
-
-## Manual install
-
-1. Copy the folders in `skills/` to your assistant's skills folder (step 3 of the prompt).
-2. In TexAu, open Settings, then Extension, then AI assistants. Use "Connect to Claude Desktop", "Connect to Cursor", or copy the Claude Code command.
+You can ask in PhantomBuster terms, for example "run the Post Likers Export Phantom" or "do the competitor posts playbook". `skills/texau-operator/references/phantom-map.md` maps each of the 145 public Phantoms to TexAu Desktop: 47 exact, 15 close, 19 as a chain of TexAu runs, and 64 with no equivalent (Instagram, Facebook, GitHub, groups, events, CRMs, email finders). The skills run on the texau MCP server only. They do not call PhantomBuster.
 
 ## Campaign memory
 
-LinkedIn sequences run over days. `skills/texau-operator/scripts/texau-ledger.mjs` keeps each campaign in `~/.texau-skills/ledger.json`: who got which step, who accepted, who replied, and how many invites and messages each account sent this week. The skills call it themselves. It needs Node 20 or later and an assistant with a shell. Say "continue my campaigns" to run the next due step of every campaign.
+LinkedIn and X sequences run over days. `skills/texau-operator/scripts/texau-ledger.mjs` keeps each campaign in `~/.texau-skills/ledger.json`: who got which step, who accepted, who replied, and how many invites, messages, likes, and follows each account sent today and this week. The skills call it themselves. It runs with Node 20+ or TexAu's runtime. Say "continue my campaigns" to run the next due step of every campaign.
 
 ## Tests
 
 ```
 cd test && npm install
-npm test                                   # mock server, ledger, and skill file checks (no model calls)
+npm test                                   # mock server, ledger, installer, and skill file checks (no model calls)
 node run-evals.mjs --mode both --jobs 4    # live model evals against the mock texau server (uses API credits)
 ```
 
-The evals run `claude -p` in a temp folder with only these skills and a mock texau server built from the real tool schemas. Each scenario is scored from the tool calls the model made, not from its reply.
+The mock server uses the real tool schemas and descriptions, and the real catalog. The evals run `claude -p` in a temp folder with only these skills and the mock server. Each scenario is scored from the tool calls the model made and the files it wrote, not from its reply. Every scenario runs twice, with the skills and without, so the gain is measured. The latest results are in `test/RESULTS.md`.
 
-## Status
+## Updating
 
-The skills pass the unit tests. The live model evals and a run against a real TexAu Desktop are still to do. Automation names come from the TexAu V2 catalog, so each skill looks up the real names with `list_automations` at run time. Test prompts are in `skills/texau-operator/references/golden-prompts.md`.
+Run `git -C ~/texau-skills pull`, then the installer again. See `CHANGELOG.md`. After a TexAu Desktop update, run `node test/read-catalog.mjs <shim> test/catalog-desktop.json` and `node test/gen-catalog.mjs`, then `npm test`.
 
 ## Research
 

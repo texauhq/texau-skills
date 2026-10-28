@@ -1,6 +1,6 @@
 ---
 name: linkedin-outreach
-description: Use when the user wants to send LinkedIn connection requests, messages, InMails, or a multi-step LinkedIn sequence through TexAu Desktop. Also use for "continue my campaigns", follow-ups, replies to handle, and outreach to post likers or event attendees.
+description: Use when the user wants to send LinkedIn connection requests, messages, InMails, or a multi-step LinkedIn sequence through TexAu Desktop. Also use for "continue my campaigns", follow-ups, replies to handle, and outreach to post likers, commenters, and followers.
 ---
 
 # LinkedIn outreach with TexAu
@@ -15,18 +15,20 @@ TexAu has no sequence engine. A campaign is a list of steps with days between th
 
 | Audience | Steps (`--steps`) | Days after the previous step (`--gaps`) |
 |---|---|---|
-| Engaged with the user's post, event, or page | `invite,message1` | `0,2` |
-| Engaged with someone else's content | `visit,invite,message1,message2` | `0,1,3,5` |
-| Cold search or list | `visit,invite,message1,message2` | `0,1,4,7` |
+| Engaged with the user's post or page | `invite,message1` | `0,2` |
+| Engaged with someone else's content | `like,invite,message1,message2` | `0,3,3,5` |
+| Cold search or list | `like,invite,message1,message2` | `0,3,4,7` |
 | Existing 1st-degree connections | `message1,message2` | `0,6` |
-| Sales Navigator with InMail credits | `visit,inmail` | `0,1` |
+| Sales Navigator leads | `invite,message1` with the Sales Navigator automations | `0,3` |
+
+`like` is a warm-up: "LinkedIn Post Auto Like" on one recent post of each person (from "LinkedIn Profile Activity Export"). TexAu Desktop 1.1.4 has no profile visit step. Skip `like` for people with no recent post.
 
 A warm list holds only people who engaged with the user or know the user. Every other list is cold. Do not mix the two in one campaign.
 
 ### 2. Create it in the ledger
 
 ```
-node <texau-operator>/scripts/texau-ledger.mjs campaign-add --name "<short-name>" --account <accountId> --steps visit,invite,message1,message2 --gaps 0,1,4,7
+node <texau-operator>/scripts/texau-ledger.mjs campaign-add --name "<short-name>" --account <accountId> --steps like,invite,message1,message2 --gaps 0,3,4,7
 ```
 
 Name campaigns after source and date, for example `rival-post-likers-2026-10`.
@@ -45,8 +47,9 @@ When the user says "continue", "next step", "follow up", or starts a new day of 
 
 1. `status` in the ledger. List each campaign with its numbers.
 2. Refresh the facts the ledger cannot see. Confirm these reads yourself:
-   - `LinkedIn Connections Export` (or the last 2 weeks of it). Then `connected --campaign <name> --csv <export>`.
-   - `LinkedIn Inbox Scraper`. Then `reply --campaign <name> --csv <threads with a reply from the prospect>`.
+   - Connections: "LinkedIn Connections Export" with `filterDate` set to the campaign start. Then `connected --campaign <name> --csv <export>`. For a few people, "LinkedIn Connection Checker" gives `isConnected` per profile.
+   - Replies: "LinkedIn Inbox Scraper", then keep threads whose `participantLiProfileUrl` is in the campaign. Run "LinkedIn Message Thread Scraper" on those `liThreadLink` values. A person replied if any message in the thread has their `liProfileUrl` as the sender after the user's first message. Write those people to a CSV with a `profileUrl` column and run `reply --campaign <name> --csv <file>`.
+   - Sales Navigator campaigns: set `replyDetect: true` on "Sales Navigator Auto Message". It skips people who replied.
 3. `due --campaign <name> --out due.csv` for each campaign. The ledger skips people who replied, people who did not accept yet, and steps whose gap is not over.
 4. `usage --account <id>`. Cut each due batch to `leftToday`. Split the allowance across campaigns, warmest first.
 5. One approval brief per write step. Run, follow, `record`.
@@ -66,7 +69,7 @@ Rules for every text:
 |---|---|---|
 | Liked or commented on the user's post | "Thanks for the {reaction} on my post about {topic}, {first_name}. Happy to connect." | "Curious what made {topic} land for you. Is it something your team is working on at {company}?" |
 | Engaged with a competitor or peer's post | "Saw your comment on {author}'s post about {topic}. I write about the same problem. Glad to connect." | "How is {company} handling {topic} today? I keep hearing two different answers." |
-| Attends the same event | "See you at {event}, {first_name}. Connecting before the day." | "What are you hoping to get out of {event}?" |
+| Attends the same event (the user gives the list) | "See you at {event}, {first_name}. Connecting before the day." | "What are you hoping to get out of {event}?" |
 | Same group | "We are both in {group}. Your take on {topic} stood out." | "What brought you to {group}?" |
 | New role | "Congrats on the move to {company}, {first_name}." | "First 90 days at {company}: what is on the list?" |
 | Company hiring for a role | "Noticed {company} is hiring a {job_title}. I work with teams in that spot." | "Is the {job_title} hire about growth or about filling a gap?" |
@@ -104,15 +107,23 @@ Read these at the start of every "continue" session, from ledger `status`:
 |---|---|---|
 | Acceptance rate | 30% or more after 50 invites | Cut invites by half. Tighten the list to warmer signals. Rewrite the note. |
 | Reply rate | 10% or more after 30 messages | Rewrite message 1. It is too long or too salesy. |
-| Pending invites | under 100 | Run `LinkedIn Sent Request Extractor`, withdraw invites older than 14 days, then invite again. |
+| Pending invites | under 100 | Run "LinkedIn Sent Request Extractor". List invites older than 14 days (`invitationDate`) for the user to withdraw in LinkedIn (My Network, Manage, Sent). TexAu Desktop 1.1.4 cannot withdraw invites. Pause new invites until pending is under 100. |
 | Any LinkedIn warning or captcha reported by the user | none | Stop all write steps on that account for 7 days. |
 
 ## Automations
 
-Search `list_automations` for these names:
+Names from texau-operator/references/desktop-catalog.md. Resolve ids with `list_automations`.
 
-- Visit: "Linkedin Profile Viewer"
-- Invite: "LinkedIn Auto Connect", "Sales Navigator Auto Connect"
-- Message: "LinkedIn Auto Message", "Sales Navigator Auto Message", "Sales Navigator AI InMail", "LinkedIn Group Auto Message"
-- Facts: "LinkedIn Connections Export", "LinkedIn Inbox Scraper", "LinkedIn Sent Request Extractor", "Check If LinkedIn Profile Is Connected or Not"
-- Cleanup: "LinkedIn Withdraw Invitation"
+| Step | Automation | Key input | Notes |
+|---|---|---|---|
+| like | LinkedIn Post Auto Like | `liPostUrl`, `reactionType` | `reactionType` is a select. Use `Like` unless the user picks another. |
+| Recent post per person | LinkedIn Profile Activity Export | `liProfileUrl`, `maxCount` = 3 | Gives `liPostUrl` for the like step |
+| invite | LinkedIn Auto Connect | `liProfileUrl`, `messageContent` | The note goes in `messageContent` |
+| invite (Sales Navigator) | Sales Navigator Auto Connect | `liProfileUrl`, `messageContent` | |
+| message | LinkedIn Auto Message | `liProfileUrl`, `message` | 1st-degree only. Output `hasReplied` |
+| message (Sales Navigator) | Sales Navigator Auto Message | `liProfileUrl`, `messageText`, `replyDetect` | |
+| Connection status | LinkedIn Connections Export, LinkedIn Connection Checker | `filterDate`; `liProfileUrl` | |
+| Replies | LinkedIn Inbox Scraper, LinkedIn Message Thread Scraper | `maxCountInboxThread`; `liThreadUrl` | |
+| Pending invites | LinkedIn Sent Request Extractor | none | `invitationDate` per invite |
+| Incoming invites | LinkedIn Received Connection Extractor, LinkedIn Auto Accept Pending Connection | none; `liProfileUrl` | |
+| Clean first names | Personal Name Cleaner | `personalName` | Run before rendering `{first_name}` |
