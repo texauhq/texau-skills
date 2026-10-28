@@ -50,3 +50,7 @@ Review mining: run Google Maps Reviews Extractor on the shortlist only. Reviews 
 - Enriching every row before qualifying. Most rows get dropped anyway.
 - Treating a Maps phone or a contact form as an email. Mark the email column empty.
 - Cold email to a catch-all address without telling the user the bounce risk.
+
+## Deliverable
+
+Deliver the lead list CSV from texau-operator/references/report-formats.md, with the business columns and the qualifying reason in `signal`. Done when the chat report gives the grid size, raw rows, kept rows, and the email status split.

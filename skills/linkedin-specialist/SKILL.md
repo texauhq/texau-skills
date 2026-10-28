@@ -46,3 +46,7 @@ Scrapes count against the account's daily budget too. Profile scrapes are the he
 - Scraping full profiles for everyone before filtering by headline.
 - Promising competitor page followers. LinkedIn shows followers only to page admins.
 - Running Sales Navigator automations on an account where `salesNavigator` is false.
+
+## Deliverable
+
+Deliver the lead list CSV from texau-operator/references/report-formats.md. The `signal` column names the source ("commented on <author>'s post, <date>"), so linkedin-outreach can use it in the note. Done when duplicates by profile URL are removed and the counts are reported.

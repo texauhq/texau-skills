@@ -76,9 +76,23 @@ You can ask in PhantomBuster terms, for example "run the Post Likers Export Phan
 1. Copy the folders in `skills/` to your assistant's skills folder (step 3 of the prompt).
 2. In TexAu, open Settings, then Extension, then AI assistants. Use "Connect to Claude Desktop", "Connect to Cursor", or copy the Claude Code command.
 
+## Campaign memory
+
+LinkedIn sequences run over days. `skills/texau-operator/scripts/texau-ledger.mjs` keeps each campaign in `~/.texau-skills/ledger.json`: who got which step, who accepted, who replied, and how many invites and messages each account sent this week. The skills call it themselves. It needs Node 20 or later and an assistant with a shell. Say "continue my campaigns" to run the next due step of every campaign.
+
+## Tests
+
+```
+cd test && npm install
+npm test                                   # mock server, ledger, and skill file checks (no model calls)
+node run-evals.mjs --mode both --jobs 4    # live model evals against the mock texau server (uses API credits)
+```
+
+The evals run `claude -p` in a temp folder with only these skills and a mock texau server built from the real tool schemas. Each scenario is scored from the tool calls the model made, not from its reply.
+
 ## Status
 
-The skills are drafts. They were tested in written role-play, not against a live TexAu Desktop. Automation names come from the TexAu V2 catalog, so each skill looks up the real names with `list_automations` at run time. Test prompts are in `skills/texau-operator/references/golden-prompts.md`.
+The skills pass the unit tests. The live model evals and a run against a real TexAu Desktop are still to do. Automation names come from the TexAu V2 catalog, so each skill looks up the real names with `list_automations` at run time. Test prompts are in `skills/texau-operator/references/golden-prompts.md`.
 
 ## Research
 

@@ -36,3 +36,7 @@ Consulting deals are few and large. Work a short list of accounts in depth. Time
 - A list of 2,000 accounts. Consulting needs depth, not volume.
 - A trigger without a date. A funding round from two years ago is not a trigger.
 - Cold pitching a buyer who shares five mutual connections with the user.
+
+## Deliverable
+
+Deliver one research brief per account from texau-operator/references/report-formats.md, plus a lead list CSV of buyers with `signal` set to the trigger and its date.

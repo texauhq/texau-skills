@@ -47,3 +47,7 @@ TexAu has no schedule. To monitor, run the same search on request and compare wi
 - Drafting promotional replies for the user to post at scale.
 - Treating upvotes as volume. Count posts and distinct authors.
 - Mixing subreddits with different audiences in one theme count.
+
+## Deliverable
+
+Deliver the research brief from texau-operator/references/report-formats.md, plus a CSV of posts with `postUrl`, `subreddit`, `theme`, `quote`, `score`, `createdAt`. Done when every quote has a link.

@@ -44,3 +44,7 @@ Resolve each name with `list_automations` before use.
 - Collecting everything about every competitor, then looking for a story.
 - Comparing a competitor's Reddit sentiment with another's G2 reviews.
 - Quoting a single angry post as a trend.
+
+## Deliverable
+
+Deliver the research brief from texau-operator/references/report-formats.md. Done when every row in the table has a source and every number has a sample size.

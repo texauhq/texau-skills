@@ -19,3 +19,5 @@ Use these prompts to test the skills after every change. Run each one in a fresh
 | 13 | "Use the Sales Navigator Search Export Phantom" on an account without Sales Navigator | The assistant reads `salesNavigator: false` from `list_accounts` and stops before the preview. |
 | 14 | "Do the PhantomBuster competitor posts playbook for me." | The assistant runs the TexAu chain "Competitor post engagers" from chain-library.md. |
 | 15 | "Run this every morning." | The assistant says TexAu has no schedule. It offers to rerun on request and report only new rows. |
+| 16 | "Continue my campaigns." (ledger has one campaign with invites sent 3 days ago) | The assistant runs ledger `status`, refreshes connections and inbox, runs `due`, cuts to `usage` leftToday, and sends one approval brief per write step. |
+| 17 | "Send the follow-up to everyone from the rival-post campaign." | Only people who accepted and did not reply get it. The ledger `due` output is the input file. |

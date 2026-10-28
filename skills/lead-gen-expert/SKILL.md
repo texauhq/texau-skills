@@ -61,3 +61,7 @@ Before a CRM or sequencer push, preview with 5 rows and show the user the field 
 - Starting with a broad search and no trigger. The list is big and nobody replies.
 - Pushing catch-all emails into a sequencer without a label.
 - Losing the `reason` column. The copy writer needs it.
+
+## Deliverable
+
+Deliver the lead list CSV from texau-operator/references/report-formats.md, with `source`, `source_run_id`, `signal`, `fit`, and `fit_reason` filled. Done when the chat report gives kept and dropped counts and the email status split.

@@ -42,3 +42,7 @@ Resolve each name with `list_automations`.
 - Running website automations on Google result URLs that are directories, social profiles, or news sites. Filter those domains out first.
 - Treating a footprint search hit as proof. Confirm with the technographic finder.
 - Calling a tech list complete. Detection misses tools that load late or run server-side.
+
+## Deliverable
+
+Deliver the lead list CSV from texau-operator/references/report-formats.md, one row per domain. Put the footprint, tag, or tech that qualified the row in `signal`.

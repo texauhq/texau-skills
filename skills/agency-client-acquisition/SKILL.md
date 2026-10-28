@@ -38,3 +38,7 @@ Agencies win with proof that the prospect has a specific problem the agency fixe
 - Generic "we help businesses grow" copy with no observed problem.
 - Pitching a business that has the problem because it is closed or tiny. Filter by review count or headcount first.
 - Sending the full audit cold. Send one finding and offer the rest.
+
+## Deliverable
+
+Deliver the lead list CSV from texau-operator/references/report-formats.md. Add `evidence` (the observed problem, with the value found) and `opener` (the drafted first line). A lead without `evidence` is dropped.
