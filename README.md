@@ -4,7 +4,7 @@ Skills that teach an AI assistant to run TexAu Desktop: LinkedIn and X outreach,
 
 ## Set it up
 
-Open TexAu Desktop 1.1 or later. Go to Settings, then Extension, and switch on "Allow AI assistants". Then paste this prompt into your assistant (Claude Code, Cursor, Codex, or any agent that can run shell commands):
+Open TexAu Desktop 1.1 or later. In the sidebar, open AI assistants, and switch on "Allow AI assistants". The page shows for a license that includes AI assistants. Then paste this prompt into your assistant (Claude Code, Cursor, Codex, or any agent that can run shell commands):
 
 ```text
 Set up TexAu Desktop for me in this assistant. Run each step, show me the output, and stop if a step fails.
@@ -27,7 +27,7 @@ Set up TexAu Desktop for me in this assistant. Run each step, show me the output
 
 The installer finds TexAu, finds which assistants are installed, copies the skills to each one, and adds the texau MCP server to each assistant's configuration. It backs up every configuration file it changes. Then it starts the server the way an assistant does and calls `get_status`. Options: `--clients claude-code,cursor,codex,agents`, `--dry-run`, `--test-only`, `--app` and `--shim`.
 
-Claude Desktop: click "Connect to Claude Desktop" in TexAu (Settings, Extension, AI assistants) and approve the install. Then upload each folder in `skills/` as a skill in Claude Desktop settings.
+Claude Desktop: open AI assistants in the TexAu sidebar. On the Claude Desktop row, click Connect, and approve the install. Then upload each folder in `skills/` as a skill in Claude Desktop.
 
 Never paste a TexAu token, cookie, or password into the assistant. Setup does not need them.
 
@@ -49,11 +49,11 @@ Never paste a TexAu token, cookie, or password into the assistant. Setup does no
 
 ## Built on the real catalog
 
-`skills/texau-operator/references/desktop-catalog.md` lists all 113 automations in TexAu Desktop 1.1.4, with their inputs, key outputs, default limits, and which ones write. It was read from a running app with `test/read-catalog.mjs`. If a skill names an automation that is not in it, a test fails. TexAu Desktop has no Reddit or Google search automations. For that step, those two skills use the assistant's own read-only web tools, and they say so.
+`skills/texau-operator/references/desktop-catalog.md` lists all 119 automations in TexAu Desktop 1.2.0, with their inputs, key outputs, default limits, and which ones write. It was read from a running app with `test/read-catalog.mjs` on 2026-11-09. If a skill names an automation that is not in it, a test fails. Desktop 1.2.0 has five Reddit automations. It has no Google search automation. `google-web-research` uses the assistant's own web search for that step.
 
 ## PhantomBuster names
 
-You can ask in PhantomBuster terms, for example "run the Post Likers Export Phantom" or "do the competitor posts playbook". `skills/texau-operator/references/phantom-map.md` maps each of the 145 public Phantoms to TexAu Desktop: 47 exact, 15 close, 19 as a chain of TexAu runs, and 64 with no equivalent (Instagram, Facebook, GitHub, groups, events, CRMs, email finders). The skills run on the texau MCP server only. They do not call PhantomBuster.
+You can ask in PhantomBuster terms, for example "run the Post Likers Export Phantom" or "do the competitor posts playbook". `skills/texau-operator/references/phantom-map.md` maps each of the 145 public Phantoms to TexAu Desktop: 47 exact, 16 close, 19 as a chain of TexAu runs, and 63 with no equivalent (Instagram, Facebook, GitHub, groups, events, CRMs, email finders). The skills run on the texau MCP server only. They do not call PhantomBuster.
 
 ## Campaign memory
 

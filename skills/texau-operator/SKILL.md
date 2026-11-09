@@ -112,6 +112,8 @@ Done when: the run is final and write steps are in the ledger.
 ### 8. Deliver
 
 - Results: page `get_run_results` with `limit: 200`, `offset` 0, 200, 400, and on until `offset >= total`. Write each page to the file as you go. Do not hold thousands of rows in the conversation.
+- Result columns: every row has `Input` ("Row 3", or "Row 3 (record 12/87)" when one input gives many records), `Status` (Success, Failed, Skipped), `Message`, then one column per output label, then `Raw result`. Every value is a string, so `"false"` and `"0"` are text. Skills name fields by output name, for example `liProfileUrl`. In result rows, use that output's label from `describe_automation` (`liProfileUrl` is "Profile URL"). references/desktop-catalog.md lists both.
+- Drop rows whose `Status` is not Success before the next step, and count them in the report.
 - One page can be over 100 KB, because it holds every output field. If the assistant saves a tool result to a file instead of showing it, process that file with a script (node, python, or jq): keep the columns you need, merge pages, and write the CSV. Do not read large results back into the conversation.
 - Compare the rows written with `total`. If they differ, say so.
 - Use the matching shape from references/report-formats.md.
@@ -123,9 +125,9 @@ Done when: the user has the file path, the row count against `total`, and the ne
 
 | Message from the server | What it means | What to do |
 |---|---|---|
-| "TexAu Desktop is not running" | The shim cannot reach the app, or AI access was never switched on | Ask the user to open TexAu. If it is open, ask them to switch on Settings > Extension > AI assistants. |
+| "TexAu Desktop is not running" | The shim cannot reach the app, or AI access was never switched on | Ask the user to open TexAu. If it is open, ask them to open AI assistants in the sidebar and switch on Allow AI assistants. |
 | "did not respond" | Timeout. After a confirm, the run can already exist. | Call `list_runs` and look for the run by name and time. If it exists, follow it. If not, preview again and confirm once. Never confirm twice without looking. |
-| "AI assistant access is off" | The switch is off | Ask the user to switch it on. |
+| "AI assistant access is off" | The switch is off | Ask the user to open AI assistants in the sidebar and switch on Allow AI assistants. |
 | "does not include AI assistant access" | The license has no MCP feature | Tell the user. Do not retry. |
 | "connection token changed" | The token was regenerated | Ask the user to reconnect this client from the AI assistants section. |
 | "No matching preview" | Expired, already used, or the arguments changed | Preview again with the final arguments. |

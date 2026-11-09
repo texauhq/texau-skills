@@ -75,3 +75,9 @@ test('real TexAu export columns (liProfileUrl) are read', () => {
   assert.equal(r.recorded, 1);
   assert.equal(run('exclude', '--account', 'acc1', '--csv', csv('again.csv', ['liProfileUrl', 'https://linkedin.com/in/ann/']), '--out', path.join(dir, 'o.csv')).kept, 0);
 });
+
+test('TexAu result columns (labels such as "Profile URL") are read', () => {
+  run('campaign-add', '--name', 'c1', '--account', 'acc1', '--steps', 'invite');
+  const r = run('record', '--campaign', 'c1', '--step', 'invite', '--csv', csv('labels.csv', ['Input,Status,Message,First Name,Profile URL,SalesNav Profile URL,Raw result', 'Row 1,Success,,Ann,https://www.linkedin.com/in/ann,https://www.linkedin.com/sales/lead/x,']));
+  assert.equal(r.recorded, 1);
+});

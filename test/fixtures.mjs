@@ -104,6 +104,24 @@ function value(field, i, key, n = i) {
   return '';
 }
 
+// Shape rows the way TexAu Desktop returns them (shared/src/run-results.ts rowsForItem):
+// Input, Status, Message, one column per output label, Raw result. Every value is a string.
+export function exportRows(key, total, inputs = []) {
+  const op = AUTOMATIONS.find((a) => a.key === key);
+  const outs = op ? op.outputs : [];
+  const raw = rowsFor(key, total, inputs);
+  const per = inputs.length > 1 ? Math.ceil(total / inputs.length) : total;
+  const cell = (v) => (v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v));
+  return raw.map((r, i) => {
+    const j = Math.min(Math.floor(i / Math.max(1, per)), Math.max(0, inputs.length - 1));
+    const records = inputs.length > 1 ? per : total;
+    const row = { Input: records > 1 ? `Row ${j + 1} (record ${(i % Math.max(1, per)) + 1}/${records})` : `Row ${j + 1}`, Status: 'Success', Message: '' };
+    for (const o of outs) if (!(o.label in row)) row[o.label] = cell(r[o.name]);
+    row['Raw result'] = '';
+    return row;
+  });
+}
+
 export function rowsFor(key, total, inputs = []) {
   const op = AUTOMATIONS.find((a) => a.key === key);
   const fields = op ? op.outputs.map((o) => o.name) : ['liProfileUrl', 'fullName', 'firstName', 'headline'];
