@@ -61,8 +61,10 @@ export function writeCsv(file, headers, rows) {
   const esc = (v) => { const s = v == null ? '' : String(v); return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
   fs.writeFileSync(file, [headers.join(','), ...rows.map((r) => headers.map((h) => esc(r[h])).join(','))].join('\n') + '\n');
 }
-const URL_COLUMNS = ['profileurl', 'profile_url', 'liprofileurl', 'lipublicprofileurl', 'participantliprofileurl', 'twprofileurl', 'snprofileurl', 'linkedinurl', 'linkedin_url', 'url'];
-const urlColumn = (headers) => URL_COLUMNS.map((c) => headers.find((h) => h.toLowerCase() === c)).find(Boolean)
+// Matches output names (liProfileUrl) and the labels TexAu uses as result columns ("Profile URL").
+const URL_COLUMNS = ['profileurl', 'liprofileurl', 'publicprofileurl', 'lipublicprofileurl', 'participantliprofileurl', 'twprofileurl', 'inputprofileurl', 'linkedinurl', 'salesnavprofileurl', 'snprofileurl', 'url'];
+const normHeader = (h) => h.toLowerCase().replace(/[^a-z]/g, '');
+const urlColumn = (headers) => URL_COLUMNS.map((c) => headers.find((h) => normHeader(h) === c)).find(Boolean)
   ?? (() => { throw new LedgerError('CSV_NO_URL_COLUMN', `No profile URL column in: ${headers.join(', ')}.`, 'Name the column profileUrl or liProfileUrl.'); })();
 
 const day = (d) => (d ? new Date(`${d}T12:00:00Z`) : new Date());

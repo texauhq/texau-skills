@@ -1,6 +1,6 @@
 {
-  "readAt": "2026-10-28T11:51:24.591Z",
-  "appVersion": "1.1.4",
+  "readAt": "2026-11-09T10:29:12.906Z",
+  "appVersion": "1.2.0",
   "automations": [
     {
       "id": "6458d8372ddf13ba75c13bcf",
@@ -12517,6 +12517,62 @@
       "defaultLimits": {}
     },
     {
+      "id": "66a21f21055af17267fe6581",
+      "name": "Website Scraper",
+      "label": "Website Scraper",
+      "platformId": "635bb0ad23dcf87dd4cb89af",
+      "description": "Scrape Website Home Page , About Us Page and Blog Page",
+      "skipBulkInput": false,
+      "inputs": [
+        {
+          "name": "websiteUrl",
+          "label": "Enter Website URL Here",
+          "type": "text",
+          "required": true,
+          "description": "Website URL"
+        },
+        {
+          "name": "scrapeAboutUsAsWell",
+          "label": "Scrape About Us Page (Beta)",
+          "type": "boolean",
+          "required": false,
+          "description": "Scrape About Us Page"
+        },
+        {
+          "name": "scrapeBlog",
+          "label": "Scrape Blog Page (Beta)",
+          "type": "boolean",
+          "required": false,
+          "description": "Scrape Blog Page"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "siteUrl",
+          "label": "Website URL"
+        },
+        {
+          "name": "homePage",
+          "label": "Home Page Content"
+        },
+        {
+          "name": "aboutUsPage",
+          "label": "About Us Content"
+        },
+        {
+          "name": "blogPage",
+          "label": "Blog Page"
+        }
+      ],
+      "requiresAccount": false,
+      "cookiePlatform": null,
+      "defaultLimits": {
+        "day": 10000,
+        "hour": 3333,
+        "week": 70000
+      }
+    },
+    {
       "id": "6492c6300f7b435e852ec054",
       "name": "Website Technographic Data Finder",
       "label": "Website Technographic Data Finder",
@@ -15336,6 +15392,1161 @@
         "hour": 50,
         "week": 1050
       }
+    },
+    {
+      "id": "65e03652753764a10aea14cd",
+      "name": "Reddit Communities Search Export",
+      "label": "Reddit Communities Search Export",
+      "platformId": "64c3959178d7c9cda49fb9d9",
+      "description": "Extract Lists of Communities from Reddit Search",
+      "skipBulkInput": false,
+      "inputs": [
+        {
+          "name": "keywords",
+          "label": "Keywords",
+          "type": "text",
+          "required": true,
+          "description": "Enter Keywords Here"
+        },
+        {
+          "name": "maxCount",
+          "label": "Extract Limit",
+          "type": "number",
+          "required": false,
+          "description": "Communities Extraction Limit (Max. 500)"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "inputKeyword",
+          "label": "Input Keyword"
+        },
+        {
+          "name": "inputMaxCount",
+          "label": "Input Extract Limit"
+        },
+        {
+          "name": "subredditName",
+          "label": "SubReddit Name"
+        },
+        {
+          "name": "prefixName",
+          "label": "SubReddit Prefix"
+        },
+        {
+          "name": "redSubId",
+          "label": "SubReddit ID"
+        },
+        {
+          "name": "redSubUrl",
+          "label": "SubReddit URL"
+        },
+        {
+          "name": "subRedditTitle",
+          "label": "SubReddit Title"
+        },
+        {
+          "name": "publicDescription",
+          "label": "Public Description"
+        },
+        {
+          "name": "privateDescription",
+          "label": "Private Description"
+        },
+        {
+          "name": "subRedditType",
+          "label": "SubReddit Type"
+        },
+        {
+          "name": "subRedditRules",
+          "label": "SubReddit Rules"
+        },
+        {
+          "name": "isNsfw",
+          "label": "NSFW"
+        },
+        {
+          "name": "language",
+          "label": "Language"
+        },
+        {
+          "name": "creationDate",
+          "label": "Creation Date"
+        },
+        {
+          "name": "subscribersCount",
+          "label": "Subscribers Count"
+        },
+        {
+          "name": "restrictsPosting",
+          "label": "Restrict Posting"
+        },
+        {
+          "name": "restrictsCommenting",
+          "label": "Restrict Commenting"
+        },
+        {
+          "name": "redSubImageIUrl",
+          "label": "SubReddit Logo"
+        },
+        {
+          "name": "redSubBannerUrl",
+          "label": "SubReddit Banner"
+        },
+        {
+          "name": "wikiEnabled",
+          "label": "Wiki Enabled"
+        },
+        {
+          "name": "headerTitle",
+          "label": "Header Title"
+        },
+        {
+          "name": "headerImageUrl",
+          "label": "Header Image"
+        },
+        {
+          "name": "headerSize",
+          "label": "Header Size"
+        },
+        {
+          "name": "iconImageUrl",
+          "label": "Icon Image"
+        },
+        {
+          "name": "bannerImageUrl",
+          "label": "Banner Image"
+        },
+        {
+          "name": "bannerBackgroundColor",
+          "label": "Banner Background"
+        },
+        {
+          "name": "publicTraffic",
+          "label": "Public Traffic"
+        },
+        {
+          "name": "emojisEnabled",
+          "label": "Emojis Enabled"
+        },
+        {
+          "name": "advertiserCategory",
+          "label": "Advertiser Category"
+        },
+        {
+          "name": "hidesCommentMinScore",
+          "label": "Comment Score Min"
+        },
+        {
+          "name": "allowsPredictions",
+          "label": "Allow Predictions"
+        },
+        {
+          "name": "allowsPredictionContributors",
+          "label": "Allow Contributor Prediction"
+        },
+        {
+          "name": "allowsPredictionsTournament",
+          "label": "Allow Tournaments"
+        },
+        {
+          "name": "predictionLeaderboardEntryType",
+          "label": "Prediction Entry Type"
+        },
+        {
+          "name": "originalContentTagEnabled",
+          "label": "Original Content Tag"
+        },
+        {
+          "name": "communityReviewed",
+          "label": "Community Reviewed"
+        },
+        {
+          "name": "spoilersEnabled",
+          "label": "Spoilers Enabled"
+        },
+        {
+          "name": "allowsTalks",
+          "label": "Allow Talks"
+        },
+        {
+          "name": "keyColor",
+          "label": "Key Color"
+        },
+        {
+          "name": "showsMediaPreview",
+          "label": "Media Preview"
+        },
+        {
+          "name": "allowsImages",
+          "label": "Allow Images"
+        },
+        {
+          "name": "allowsGifs",
+          "label": "Allow Gifs"
+        },
+        {
+          "name": "allowsVideos",
+          "label": "Allow Videos"
+        },
+        {
+          "name": "showsMedia",
+          "label": "Show Media"
+        },
+        {
+          "name": "submissionType",
+          "label": "Submission Type"
+        },
+        {
+          "name": "shouldArchivePosts",
+          "label": "Archive Post"
+        },
+        {
+          "name": "allowsPolls",
+          "label": "Allow Polls"
+        },
+        {
+          "name": "collapseDeletedComments",
+          "label": "Hide Deleted"
+        },
+        {
+          "name": "isCrosspostable",
+          "label": "Crosspostable"
+        },
+        {
+          "name": "defaultCommentSorting",
+          "label": "Default Sorting"
+        },
+        {
+          "name": "showsMediaInComments",
+          "label": "Media in Comments"
+        },
+        {
+          "name": "linkFlairEnabled",
+          "label": "Link Flair Enabled"
+        },
+        {
+          "name": "canAssignLinkFlair",
+          "label": "Assign Link Flair"
+        },
+        {
+          "name": "accountsActiveIsFuzzed",
+          "label": "Active Account Fuzz"
+        },
+        {
+          "name": "submitTextLabel",
+          "label": "Submit Text Label"
+        },
+        {
+          "name": "submitLinkLabel",
+          "label": "Submit Link Label"
+        },
+        {
+          "name": "allowsDiscovery",
+          "label": "Allow Discovery"
+        },
+        {
+          "name": "acceptsFollowers",
+          "label": "Accept Followers"
+        },
+        {
+          "name": "disablesContributorRequests",
+          "label": "Disable Requests"
+        },
+        {
+          "name": "isChatPostEnabled",
+          "label": "Chat Post Enabled"
+        }
+      ],
+      "requiresAccount": false,
+      "cookiePlatform": "reddit",
+      "defaultLimits": {
+        "day": 50,
+        "hour": 16,
+        "week": 350
+      }
+    },
+    {
+      "id": "64c751b02c16670fb4cbbcb4",
+      "name": "Reddit Posts Search Export",
+      "label": "Reddit Posts Search Export",
+      "platformId": "64c3959178d7c9cda49fb9d9",
+      "description": "Extract Posts Mentioning a Keyword on Reddit",
+      "skipBulkInput": false,
+      "inputs": [
+        {
+          "name": "redSearchUrl",
+          "label": "Keyword or Search URL",
+          "type": "text",
+          "required": true,
+          "description": "Enter a keyword, a Reddit search URL, or a subreddit URL"
+        },
+        {
+          "name": "subReddit",
+          "label": "SubReddit Name",
+          "type": "text",
+          "required": false,
+          "description": "Enter SubReddit Name Here"
+        },
+        {
+          "name": "sort",
+          "label": "Sort By",
+          "type": "select",
+          "required": false,
+          "description": "Sort Posts by Relevance, Top, New, or Comments"
+        },
+        {
+          "name": "timeRange",
+          "label": "Time Range",
+          "type": "select",
+          "required": false,
+          "description": "Select Posts From All Time, Last Hour, Day, Week, Month or Year"
+        },
+        {
+          "name": "safeSearch",
+          "label": "Safe Search",
+          "type": "select",
+          "required": false,
+          "description": "Show or Hide NSFW Posts"
+        },
+        {
+          "name": "restrictSubreddit",
+          "label": "Target Subreddit Only",
+          "type": "select",
+          "required": false,
+          "description": "Only Show Posts From Target Subreddit"
+        },
+        {
+          "name": "maxCount",
+          "label": "Post Extraction Limit (Max. 500 per Search URL)",
+          "type": "number",
+          "required": false,
+          "description": "Extract Limit. Reddit search usually ends after about 250 results."
+        }
+      ],
+      "outputs": [
+        {
+          "name": "inputRedSearchUrl",
+          "label": "Input Keyword or Search URL"
+        },
+        {
+          "name": "inputSubReddit",
+          "label": "Input SubReddit Name"
+        },
+        {
+          "name": "inputSort",
+          "label": "Input Sort By"
+        },
+        {
+          "name": "inputTimeRange",
+          "label": "Input Time Range"
+        },
+        {
+          "name": "inputSafeSearch",
+          "label": "Input Safe Search"
+        },
+        {
+          "name": "inputRestrictSubreddit",
+          "label": "Input Target Subreddit Only"
+        },
+        {
+          "name": "subredditName",
+          "label": "SubReddit Name"
+        },
+        {
+          "name": "redSubId",
+          "label": "SubReddit ID"
+        },
+        {
+          "name": "prefixName",
+          "label": "SubReddit Prefix"
+        },
+        {
+          "name": "redSubUrl",
+          "label": "SubReddit URL"
+        },
+        {
+          "name": "subRedditType",
+          "label": "SubReddit Type"
+        },
+        {
+          "name": "subscribersCount",
+          "label": "Subscribers Count"
+        },
+        {
+          "name": "redPostUrl",
+          "label": "Post URL"
+        },
+        {
+          "name": "redPostSlug",
+          "label": "Post Slug"
+        },
+        {
+          "name": "postContent",
+          "label": "Post Content"
+        },
+        {
+          "name": "postTitle",
+          "label": "Post Title"
+        },
+        {
+          "name": "postTag",
+          "label": "Post Tag"
+        },
+        {
+          "name": "postDate",
+          "label": "Post Date"
+        },
+        {
+          "name": "redPostImageUrl",
+          "label": "Post Thumbnail"
+        },
+        {
+          "name": "redPostLink",
+          "label": "Post Link"
+        },
+        {
+          "name": "postHint",
+          "label": "Post Hint"
+        },
+        {
+          "name": "postDomain",
+          "label": "Post Domain"
+        },
+        {
+          "name": "isRedditDomain",
+          "label": "Reddit Domain"
+        },
+        {
+          "name": "handle",
+          "label": "Profile Handle"
+        },
+        {
+          "name": "redProfileUrl",
+          "label": "Profile URL"
+        },
+        {
+          "name": "commentsCount",
+          "label": "Comments Count"
+        },
+        {
+          "name": "isEdited",
+          "label": "Edited"
+        },
+        {
+          "name": "isSaved",
+          "label": "Saved"
+        },
+        {
+          "name": "isClicked",
+          "label": "Clicked"
+        },
+        {
+          "name": "isArchived",
+          "label": "Archived"
+        },
+        {
+          "name": "isPinned",
+          "label": "Pinned"
+        },
+        {
+          "name": "isHidden",
+          "label": "Hidden"
+        },
+        {
+          "name": "isLocked",
+          "label": "Locked"
+        },
+        {
+          "name": "isVisited",
+          "label": "Visited"
+        },
+        {
+          "name": "isOriginalContent",
+          "label": "Original Content"
+        },
+        {
+          "name": "isNsfw",
+          "label": "NSFW"
+        },
+        {
+          "name": "awardsCount",
+          "label": "Awards Count"
+        },
+        {
+          "name": "viewsCount",
+          "label": "Views Count"
+        },
+        {
+          "name": "upvotesCount",
+          "label": "Upvotes Count"
+        },
+        {
+          "name": "downvotesCount",
+          "label": "Downvotes Count"
+        },
+        {
+          "name": "upvoteRatio",
+          "label": "Upvote Ratio"
+        },
+        {
+          "name": "noUpvotes",
+          "label": "No Upvotes"
+        },
+        {
+          "name": "isPremiumAuthor",
+          "label": "Premium Author"
+        },
+        {
+          "name": "mediaAuthorUrl",
+          "label": "Media Author URL"
+        },
+        {
+          "name": "mediaAuthorName",
+          "label": "Media Author Name"
+        },
+        {
+          "name": "liveCommentsEnabled",
+          "label": "Live Comments"
+        },
+        {
+          "name": "isVideo",
+          "label": "Video"
+        },
+        {
+          "name": "crosspostsCount",
+          "label": "Crossposts Count"
+        },
+        {
+          "name": "isCrosspostable",
+          "label": "Crosspostable"
+        },
+        {
+          "name": "reportsCount",
+          "label": "Reports Count"
+        },
+        {
+          "name": "opNotification",
+          "label": "OP Notification"
+        },
+        {
+          "name": "isStickyPost",
+          "label": "Sticky Post"
+        },
+        {
+          "name": "hasSpoiler",
+          "label": "Spoiler"
+        }
+      ],
+      "requiresAccount": false,
+      "cookiePlatform": "reddit",
+      "defaultLimits": {}
+    },
+    {
+      "id": "64d4c5eed703b279778a7361",
+      "name": "Reddit Subreddit Posts Export",
+      "label": "Reddit Subreddit Posts Export",
+      "platformId": "64c3959178d7c9cda49fb9d9",
+      "description": "Extract the Latest Posts of any Subreddit",
+      "skipBulkInput": false,
+      "inputs": [
+        {
+          "name": "subRedditUrl",
+          "label": "Reddit subreddit URL",
+          "type": "text",
+          "required": true,
+          "description": "Enter Reddit subreddit URL or Name here"
+        },
+        {
+          "name": "maxCount",
+          "label": "Extract Limit",
+          "type": "number",
+          "required": false,
+          "description": "Post Extraction Limit (Max. 500)"
+        },
+        {
+          "name": "sort",
+          "label": "Sort",
+          "type": "select",
+          "required": false,
+          "description": "Relevance, Hot, Top or New"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "inputSubRedditUrl",
+          "label": "Input Reddit Subreddit URL"
+        },
+        {
+          "name": "inputMaxCount",
+          "label": "Extract Limit"
+        },
+        {
+          "name": "inputSort",
+          "label": "Sort"
+        },
+        {
+          "name": "subredditName",
+          "label": "SubReddit Name"
+        },
+        {
+          "name": "redSubId",
+          "label": "SubReddit ID"
+        },
+        {
+          "name": "prefixName",
+          "label": "SubReddit Prefix"
+        },
+        {
+          "name": "redSubUrl",
+          "label": "SubReddit URL"
+        },
+        {
+          "name": "subRedditType",
+          "label": "SubReddit Type"
+        },
+        {
+          "name": "subscribersCount",
+          "label": "Subscribers Count"
+        },
+        {
+          "name": "redPostUrl",
+          "label": "Post URL"
+        },
+        {
+          "name": "redPostSlug",
+          "label": "Post Slug"
+        },
+        {
+          "name": "postContent",
+          "label": "Post Content"
+        },
+        {
+          "name": "postTitle",
+          "label": "Post Title"
+        },
+        {
+          "name": "postTag",
+          "label": "Post Tag"
+        },
+        {
+          "name": "postDate",
+          "label": "Post Date"
+        },
+        {
+          "name": "redPostImageUrl",
+          "label": "Post Thumbnail"
+        },
+        {
+          "name": "isRedditDomain",
+          "label": "Reddit Domain"
+        },
+        {
+          "name": "handle",
+          "label": "Profile Handle"
+        },
+        {
+          "name": "redProfileUrl",
+          "label": "Profile URL"
+        },
+        {
+          "name": "commentsCount",
+          "label": "Comments Count"
+        },
+        {
+          "name": "isEdited",
+          "label": "Edited"
+        },
+        {
+          "name": "isSaved",
+          "label": "Saved"
+        },
+        {
+          "name": "isClicked",
+          "label": "Clicked"
+        },
+        {
+          "name": "isArchived",
+          "label": "Archived"
+        },
+        {
+          "name": "isPinned",
+          "label": "Pinned"
+        },
+        {
+          "name": "isHidden",
+          "label": "Hidden"
+        },
+        {
+          "name": "isLocked",
+          "label": "Locked"
+        },
+        {
+          "name": "isVisited",
+          "label": "Visited"
+        },
+        {
+          "name": "isOriginalContent",
+          "label": "Original Content"
+        },
+        {
+          "name": "isNsfw",
+          "label": "NSFW"
+        },
+        {
+          "name": "awardsCount",
+          "label": "Awards Count"
+        },
+        {
+          "name": "viewsCount",
+          "label": "Views Count"
+        },
+        {
+          "name": "upvotesCount",
+          "label": "Upvotes Count"
+        },
+        {
+          "name": "downvotesCount",
+          "label": "Downvotes Count"
+        },
+        {
+          "name": "upvoteRatio",
+          "label": "Upvote Ratio"
+        },
+        {
+          "name": "noUpvotes",
+          "label": "No Upvotes"
+        },
+        {
+          "name": "isPremiumAuthor",
+          "label": "Premium Author"
+        },
+        {
+          "name": "mediaAuthorUrl",
+          "label": "Media Author URL"
+        },
+        {
+          "name": "mediaAuthorName",
+          "label": "Media Author Name"
+        },
+        {
+          "name": "liveCommentsEnabled",
+          "label": "Live Comments"
+        },
+        {
+          "name": "isVideo",
+          "label": "Video"
+        },
+        {
+          "name": "crosspostsCount",
+          "label": "Crossposts Count"
+        },
+        {
+          "name": "isCrosspostable",
+          "label": "Crosspostable"
+        },
+        {
+          "name": "reportsCount",
+          "label": "Reports Count"
+        },
+        {
+          "name": "opNotification",
+          "label": "OP Notification"
+        },
+        {
+          "name": "isStickyPost",
+          "label": "Sticky Post"
+        },
+        {
+          "name": "hasSpoiler",
+          "label": "Spoiler"
+        }
+      ],
+      "requiresAccount": false,
+      "cookiePlatform": "reddit",
+      "defaultLimits": {}
+    },
+    {
+      "id": "64d4c7add703b279778f3ceb",
+      "name": "Reddit Trends Export",
+      "label": "Reddit Trends Export",
+      "platformId": "64c3959178d7c9cda49fb9d9",
+      "description": "Export Latest Trending Posts From Reddit",
+      "skipBulkInput": false,
+      "inputs": [
+        {
+          "name": "locationFilter",
+          "label": "Location",
+          "type": "select",
+          "required": false,
+          "description": "Select Global or a specific country. Location applies to the Hot sort only; Reddit does not localize the other sorts."
+        },
+        {
+          "name": "sortBy",
+          "label": "Sort By",
+          "type": "select",
+          "required": false,
+          "description": "Sort Trends by Best, Hot, New, Top, Rising"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "inputLocationFilter",
+          "label": "Input locationFilter"
+        },
+        {
+          "name": "inputSortBy",
+          "label": "Input Sort By"
+        },
+        {
+          "name": "subredditName",
+          "label": "SubReddit Name"
+        },
+        {
+          "name": "redSubId",
+          "label": "SubReddit ID"
+        },
+        {
+          "name": "prefixName",
+          "label": "SubReddit Prefix"
+        },
+        {
+          "name": "redSubUrl",
+          "label": "SubReddit URL"
+        },
+        {
+          "name": "subRedditType",
+          "label": "SubReddit Type"
+        },
+        {
+          "name": "subscribersCount",
+          "label": "Subscribers Count"
+        },
+        {
+          "name": "redPostUrl",
+          "label": "Post URL"
+        },
+        {
+          "name": "redPostSlug",
+          "label": "Post Slug"
+        },
+        {
+          "name": "postTitle",
+          "label": "Post Title"
+        },
+        {
+          "name": "postFlair",
+          "label": "Post Flair"
+        },
+        {
+          "name": "postDate",
+          "label": "Post Date"
+        },
+        {
+          "name": "redPostImageUrl",
+          "label": "Post Thumbnail"
+        },
+        {
+          "name": "articleUrl",
+          "label": "Article URL"
+        },
+        {
+          "name": "postHint",
+          "label": "Post Hint"
+        },
+        {
+          "name": "postDomain",
+          "label": "Post Domain"
+        },
+        {
+          "name": "isRedditDomain",
+          "label": "Reddit Domain"
+        },
+        {
+          "name": "handle",
+          "label": "Handle"
+        },
+        {
+          "name": "redProfileUrl",
+          "label": "Profile URL"
+        },
+        {
+          "name": "commentsCount",
+          "label": "Comments Count"
+        },
+        {
+          "name": "isEdited",
+          "label": "Edited"
+        },
+        {
+          "name": "isArchived",
+          "label": "Archived"
+        },
+        {
+          "name": "isPinned",
+          "label": "Pinned"
+        },
+        {
+          "name": "isHidden",
+          "label": "Hidden"
+        },
+        {
+          "name": "isLocked",
+          "label": "Locked"
+        },
+        {
+          "name": "isOriginalContent",
+          "label": "Original Content"
+        },
+        {
+          "name": "isNsfw",
+          "label": "NSFW"
+        },
+        {
+          "name": "awardsCount",
+          "label": "Awards Count"
+        },
+        {
+          "name": "viewsCount",
+          "label": "Views Count"
+        },
+        {
+          "name": "upvotesCount",
+          "label": "Upvotes Count"
+        },
+        {
+          "name": "downvotesCount",
+          "label": "Downvotes Count"
+        },
+        {
+          "name": "upvoteRatio",
+          "label": "Upvote Ratio"
+        },
+        {
+          "name": "noUpvotes",
+          "label": "No Upvotes"
+        },
+        {
+          "name": "isPremiumAuthor",
+          "label": "Premium Author"
+        },
+        {
+          "name": "mediaAuthorUrl",
+          "label": "Media Author URL"
+        },
+        {
+          "name": "mediaAuthorName",
+          "label": "Media Author Name"
+        },
+        {
+          "name": "liveCommentsEnabled",
+          "label": "Live Comments"
+        },
+        {
+          "name": "isVideo",
+          "label": "Video"
+        },
+        {
+          "name": "crosspostsCount",
+          "label": "Crossposts Count"
+        },
+        {
+          "name": "isCrosspostable",
+          "label": "Crosspostable"
+        },
+        {
+          "name": "reportsCount",
+          "label": "Reports Count"
+        },
+        {
+          "name": "opNotification",
+          "label": "OP Notification"
+        },
+        {
+          "name": "isStickyPost",
+          "label": "Sticky Post"
+        },
+        {
+          "name": "hasSpoiler",
+          "label": "Spoiler"
+        },
+        {
+          "name": "gildedCount",
+          "label": "Gilded Count"
+        }
+      ],
+      "requiresAccount": false,
+      "cookiePlatform": "reddit",
+      "defaultLimits": {}
+    },
+    {
+      "id": "64d4c83ad703b2797790bc30",
+      "name": "Reddit User Search Export",
+      "label": "Reddit User Search Export",
+      "platformId": "64c3959178d7c9cda49fb9d9",
+      "description": "Export Redditors Profile from Reddit Search",
+      "skipBulkInput": false,
+      "inputs": [
+        {
+          "name": "keyword",
+          "label": "Handle, Keyword or Search URL",
+          "type": "text",
+          "required": true,
+          "description": "Enter User Handle, Profile or Search URL Here"
+        },
+        {
+          "name": "maxCount",
+          "label": "Extract Limit",
+          "type": "number",
+          "required": false,
+          "description": "User Profile Extraction Limit (Max: 100)"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "inputKeyword",
+          "label": "Input Handle, Keyword or Search URL"
+        },
+        {
+          "name": "inputMaxCount",
+          "label": "Input Extract Limit"
+        },
+        {
+          "name": "subRedditType",
+          "label": "SubReddit Type"
+        },
+        {
+          "name": "name",
+          "label": "Name"
+        },
+        {
+          "name": "handle",
+          "label": "Handle"
+        },
+        {
+          "name": "redProfileUrl",
+          "label": "Profile URL"
+        },
+        {
+          "name": "redProfileId",
+          "label": "Profile ID"
+        },
+        {
+          "name": "userPrefixName",
+          "label": "Redditor Prefix Name"
+        },
+        {
+          "name": "description",
+          "label": "Description"
+        },
+        {
+          "name": "redProfileImageUrl",
+          "label": "Profile Thumbnail"
+        },
+        {
+          "name": "redProfileBannerUrl",
+          "label": "Profile Banner"
+        },
+        {
+          "name": "isDefaultThumbnail",
+          "label": "Default Thumbnail"
+        },
+        {
+          "name": "isDefaultBanner",
+          "label": "Default Banner"
+        },
+        {
+          "name": "redSnoovatarUrl",
+          "label": "Snoovatar URL"
+        },
+        {
+          "name": "showsSnoovatar",
+          "label": "Show Snoovatar"
+        },
+        {
+          "name": "creationDate",
+          "label": "Creation Date"
+        },
+        {
+          "name": "isSuspended",
+          "label": "Suspended"
+        },
+        {
+          "name": "isVerified",
+          "label": "Verified"
+        },
+        {
+          "name": "isEmailVerified",
+          "label": "Email Verified"
+        },
+        {
+          "name": "commentsKarmaPoints",
+          "label": "Comments Karma"
+        },
+        {
+          "name": "postsKarmaPoints",
+          "label": "Posts Karma"
+        },
+        {
+          "name": "isGold",
+          "label": "Gold"
+        },
+        {
+          "name": "isModerator",
+          "label": "Moderator"
+        },
+        {
+          "name": "isContributor",
+          "label": "Contributor"
+        },
+        {
+          "name": "disablesContributorRequests",
+          "label": "Disables Contributors"
+        },
+        {
+          "name": "acceptsFollowers",
+          "label": "Accept Followers"
+        },
+        {
+          "name": "isNsfw",
+          "label": "NSFW"
+        },
+        {
+          "name": "isBanned",
+          "label": "Banned User"
+        },
+        {
+          "name": "showsMedia",
+          "label": "Show Media"
+        },
+        {
+          "name": "hideFromBots",
+          "label": "Hide From Bots"
+        },
+        {
+          "name": "isQuarantined",
+          "label": "Quarantined"
+        },
+        {
+          "name": "isRedditEmployee",
+          "label": "Reddit Employee"
+        },
+        {
+          "name": "subscribersCount",
+          "label": "Subscribers Count"
+        },
+        {
+          "name": "restrictsPosting",
+          "label": "Restrict Posting"
+        },
+        {
+          "name": "restrictsCommenting",
+          "label": "Restrict Commenting"
+        }
+      ],
+      "requiresAccount": false,
+      "cookiePlatform": "reddit",
+      "defaultLimits": {}
     },
     {
       "id": "65cb393d50e6253a9d078cca",

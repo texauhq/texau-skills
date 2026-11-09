@@ -5,42 +5,44 @@ description: Use when the user wants Reddit research next to a TexAu workflow. C
 
 # Reddit research
 
-**REQUIRED:** texau-operator for any TexAu step that follows.
+**REQUIRED:** texau-operator.
 
-TexAu Desktop 1.1.4 has no Reddit automations. Call `list_automations` first, because a newer build can add them. If there are none, do the research with the assistant's own web tools on public Reddit pages, and say so once. This skill only reads. It never posts, comments, votes, or drafts replies for the user to post at scale. Reddit bans accounts for promotion.
+TexAu Desktop 1.2.0 has five Reddit automations. All five read. None of them post, comment, or vote. Call `list_automations` and use the names below. This skill never drafts replies for the user to post at scale. Reddit bans accounts for promotion.
 
-## Reading Reddit without TexAu
+`requiresAccount` is false on all five. The cookie platform is `reddit`. If a run fails because Reddit cookies are missing, ask the user to connect Reddit in TexAu. Then run it again.
 
-Public JSON endpoints return the same data as the pages. Fetch them with the assistant's web fetch tool:
+## Automations
 
-| Need | URL |
-|---|---|
-| Search one subreddit | `https://www.reddit.com/r/<sub>/search.json?q=<query>&restrict_sr=1&sort=new&t=year&limit=100` |
-| Search all of Reddit | `https://www.reddit.com/search.json?q=<query>&sort=relevance&t=year&limit=100` |
-| Top posts of a subreddit | `https://www.reddit.com/r/<sub>/top.json?t=year&limit=100` |
-| A thread with comments | `https://www.reddit.com/r/<sub>/comments/<id>.json` |
-| Find subreddits | `https://www.reddit.com/subreddits/search.json?q=<topic>&limit=25` |
+| Goal | Automation | Input |
+|---|---|---|
+| Find subreddits | "Reddit Communities Search Export" | `keywords` is required. `maxCount` is optional (max 500). The day limit is 50. |
+| Posts for a keyword | "Reddit Posts Search Export" | `redSearchUrl` is required (keyword, search URL, or subreddit URL). Optional: `subReddit`, `sort`, `timeRange`, `safeSearch`, `restrictSubreddit`, `maxCount` (max 500). Search often stops near 250. |
+| Posts in one subreddit | "Reddit Subreddit Posts Export" | `subRedditUrl` is required (URL or name). Optional: `sort`, `maxCount` (max 500). |
+| Front-page trends | "Reddit Trends Export" | Optional: `locationFilter` (Hot sort only), `sortBy`. |
+| People | "Reddit User Search Export" | `keyword` is required (handle, keyword, or search URL). `maxCount` is optional (max 100). |
 
-Fetch slowly, one request every few seconds. If Reddit blocks the request, tell the user, and offer the web search tool with `site:reddit.com <query>` instead.
+This build has no Reddit comment export. For comments on one thread, use the public JSON URL in the fallback section.
+
+Result rows use the output label as the column name. Keep `Post URL`, `SubReddit Name`, `Post Title`, `Profile Handle`, `Upvotes Count`, `Comments Count`, `Post Date`, and `Post Content`.
 
 ## Stages
 
 ### 1. Audience
 
-Find 5 to 15 subreddits for the topic. Keep ones with posts in the last 30 days and more than a few comments per post. Show the list with subscriber counts. Do not mix audiences (founders and students) in one count.
+Run "Reddit Communities Search Export" for the topic. Keep communities with posts in the last 30 days. Show `SubReddit Name`, `SubReddit URL`, `Subscribers Count`, and `Public Description`. Do not mix audiences (founders and students) in one count.
 
 Done when: the user agrees on the subreddit list, or says "use your list".
 
 ### 2. Collect
 
-| Goal | Query pattern |
+| Goal | Run |
 |---|---|
-| Pain points | Top posts of the year, plus searches for "frustrated", "hate", "problem with", "<category> sucks" |
-| Solution requests (leads) | "recommend", "alternative to", "looking for a tool", "anyone use", "what do you use for" + category |
-| Brand and competitor mentions | Each brand name, in quotes |
-| Money talk | "pricing", "worth it", "too expensive", "cancelled" + category |
+| Pain points | "Reddit Subreddit Posts Export" on each agreed subreddit, sort Top. Also "Reddit Posts Search Export" for "frustrated", "hate", "problem with", and "<category> sucks". |
+| Solution requests (leads) | "Reddit Posts Search Export" for "recommend", "alternative to", "looking for a tool", "anyone use", and "what do you use for", plus the category. |
+| Brand and competitor mentions | "Reddit Posts Search Export" for each brand name, in quotes. |
+| Money talk | "Reddit Posts Search Export" for "pricing", "worth it", "too expensive", and "cancelled", plus the category. |
 
-Save every post to `reddit_posts.csv` with `postUrl`, `subreddit`, `title`, `author`, `score`, `num_comments`, `createdAt`, `text`. Listings stop at about 1,000 items. If a search hits that, say the list is cut off.
+Save the rows to `reddit_posts.csv`. If a run hits `maxCount`, say that the list is cut off.
 
 Done when: the CSV exists and each query's row count is reported.
 
@@ -51,8 +53,22 @@ One label per post: solution request, pain or anger, advice request, money talk,
 ### 4. Turn it into action
 
 - Copy: list the exact phrases people use for the problem. These go into landing page, ad, and outreach copy.
-- Leads: Reddit usernames are not contact data. For solution requests, record the company or role that the poster states. Leave it empty if the post names none. Then find the company with linkedin-specialist or google-web-research. Never try to unmask an anonymous user.
+- Leads: Reddit usernames are not contact data. For solution requests, record the company or role that the poster states. If the post names none, leave the company empty. Then find the company with linkedin-specialist or google-web-research. Never try to unmask an anonymous user.
 - Competitors: compare mention counts and the share of negative posts per brand, over the same window.
+
+## Fallback for an older build
+
+If `list_automations` returns no Reddit automation, say so once. Then read public Reddit JSON with the assistant's web fetch tool.
+
+| Need | URL |
+|---|---|
+| Search one subreddit | `https://www.reddit.com/r/<sub>/search.json?q=<query>&restrict_sr=1&sort=new&t=year&limit=100` |
+| Search all of Reddit | `https://www.reddit.com/search.json?q=<query>&sort=relevance&t=year&limit=100` |
+| Top posts of a subreddit | `https://www.reddit.com/r/<sub>/top.json?t=year&limit=100` |
+| A thread with comments | `https://www.reddit.com/r/<sub>/comments/<id>.json` |
+| Find subreddits | `https://www.reddit.com/subreddits/search.json?q=<topic>&limit=25` |
+
+Fetch slowly, one request every few seconds. If Reddit blocks the request, tell the user. Then offer the web search tool with `site:reddit.com <query>`.
 
 ## Deliver
 
@@ -62,8 +78,9 @@ The research brief in texau-operator/references/report-formats.md, plus `reddit_
 
 | Mistake | Do instead |
 |---|---|
+| Saying this build has no Reddit export | Call `list_automations`. Desktop 1.2.0 has the five automations above. |
 | Drafting promotional replies for the user to post | Read only. Suggest the user join threads manually where they can help. |
 | Treating upvotes as volume | Count posts and distinct authors |
 | One angry post quoted as a trend | Report counts with the sample size |
 | Profiling a private person from their comment history | Only aggregate patterns, no personal dossiers |
-| Claiming TexAu scraped Reddit | Say the assistant's web tools read public pages |
+| Using a Reddit username as contact data | Record only a company or role that the post itself states |

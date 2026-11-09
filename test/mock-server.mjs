@@ -7,7 +7,7 @@ import { randomUUID } from 'node:crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { AUTOMATIONS, ACCOUNTS, rowsFor } from './fixtures.mjs';
+import { AUTOMATIONS, ACCOUNTS, exportRows } from './fixtures.mjs';
 
 const scenario = process.env.MOCK_SCENARIO ? JSON.parse(fs.readFileSync(process.env.MOCK_SCENARIO, 'utf8')) : {};
 const LOG = process.env.MOCK_LOG ?? '/dev/null';
@@ -158,7 +158,7 @@ const handlers = {
   get_run: ({ runId }) => view(runs.find((r) => r.runId === runId) ?? bad('No run with that id.')),
   get_run_results: ({ runId, limit = 50, offset = 0 }) => {
     const run = runs.find((r) => r.runId === runId) ?? bad('No run with that id.');
-    const all = rowsFor(run.key, run.resultTotal, run.inputs);
+    const all = exportRows(run.key, run.resultTotal, run.inputs);
     return { total: all.length, rows: all.slice(offset, offset + Math.min(limit, 200)) };
   },
   run_automation: (a) => runTool('run_automation', a),

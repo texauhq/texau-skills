@@ -48,7 +48,7 @@ export function findApp(o, platform = process.platform, home = os.homedir(), env
     return { app: path.resolve(o.app), shim: path.resolve(o.shim) };
   }
   const hit = candidates(platform, home, env).find(([a, s]) => fs.existsSync(a) && fs.existsSync(s));
-  if (!hit) throw new InstallError('APP_NOT_FOUND', 'TexAu Desktop was not found in the standard install folders.', 'Install TexAu Desktop 1.1 or later. For a custom folder or an AppImage, pass --app <TexAu binary> --shim <resources/mcp/texau-mcp.cjs>. The AI assistants section in TexAu Settings shows both paths in its Claude Code command.');
+  if (!hit) throw new InstallError('APP_NOT_FOUND', 'TexAu Desktop was not found in the standard install folders.', 'Install TexAu Desktop 1.1 or later. For a custom folder or an AppImage, pass --app <TexAu binary> --shim <resources/mcp/texau-mcp.cjs>. The Claude Code command on the AI assistants page shows both paths.');
   return { app: hit[0], shim: hit[1] };
 }
 
@@ -156,7 +156,7 @@ export function testConnection(app, shim, timeoutMs = 20000) {
 
 const FIX = {
   'not running': 'Open TexAu Desktop, then run the installer again with --test-only.',
-  'access is off': 'In TexAu, open Settings, then Extension, and switch on "Allow AI assistants".',
+  'access is off': 'In TexAu, open AI assistants in the sidebar, and switch on "Allow AI assistants".',
   'does not include': 'Your TexAu plan does not include AI assistant access. Contact TexAu support.',
 };
 
@@ -190,7 +190,7 @@ export async function main(argv, home = os.homedir()) {
     result.test = test;
   }
   result.log = log;
-  result.next = ['Restart each AI assistant so it loads the texau server and the skills.', 'For Claude Desktop, click "Connect to Claude Desktop" in TexAu Settings, Extension, AI assistants.'];
+  result.next = ['Restart each AI assistant so it loads the texau server and the skills.', 'For Claude Desktop, open AI assistants in the TexAu sidebar. On the Claude Desktop row, click Connect.'];
   return result;
 }
 

@@ -1,6 +1,6 @@
 # PhantomBuster Phantom to TexAu automation map
 
-Use this map when the user names a Phantom or a PhantomBuster playbook. Resolve every TexAu name with `list_automations` before use. The desktop catalog can differ from this map.
+If the user names a Phantom or a PhantomBuster playbook, use this map. Resolve every TexAu name with `list_automations` before use. The desktop catalog can differ from this map.
 
 Match values:
 
@@ -9,7 +9,7 @@ Match values:
 - chain: run the TexAu automations in the order shown. `>` means the next step, `+` means both, and `/` means either.
 - none: TexAu has no equivalent. Tell the user, and offer the nearest skill or a CSV hand-off.
 
-Source: the public PhantomBuster Phantom Database snapshot of 2026-10-09 (145 Phantoms), mapped to the TexAu Desktop 1.1.4 catalog (references/desktop-catalog.md) on 2026-10-28.
+Source: the public PhantomBuster Phantom Database snapshot of 2026-10-09 (145 Phantoms), mapped to the TexAu Desktop 1.1.4 catalog on 2026-10-28. The Reddit Profile Scraper row was checked against the Desktop 1.2.0 catalog on 2026-11-09.
 
 | Phantom | TexAu automation | Match | Note |
 |---|---|---|---|
@@ -136,7 +136,7 @@ Source: the public PhantomBuster Phantom Database snapshot of 2026-10-09 (145 Ph
 | YouTube Channel Scraper | YouTube Channel Scraper | exact |  |
 | YouTube Channel Video Extractor | YouTube Channel Videos Scraper | exact |  |
 | YouTube Video Scraper | YouTube Video Scraper | exact |  |
-| Reddit Profile Scraper | none | none | reddit-specialist reads public Reddit pages with the assistant's web tools. |
+| Reddit Profile Scraper | Reddit User Search Export | close | Searches people by handle, keyword, or search URL. It does not read one profile's post history. Max 100. |
 | Instagram Auto Commenter | none | none |  |
 | Instagram Auto Follow | none | none |  |
 | Instagram Auto Liker | none | none |  |

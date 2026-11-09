@@ -24,7 +24,9 @@ test('exposes the same 13 tools as the real shim, and the real catalog', async (
   const { tools } = await c.listTools();
   assert.equal(tools.length, 13);
   const call = async (name) => JSON.parse((await c.callTool({ name, arguments: {} })).content[0].text);
-  assert.equal((await call('list_automations')).length, 113);
+  const ops = await call('list_automations');
+  assert.equal(ops.length, 119);
+  assert.ok(ops.some((o) => o.name === 'Reddit Posts Search Export'));
   await c.close();
 });
 
@@ -77,7 +79,9 @@ test('batch results echo their input and two inputs overlap by half', async () =
   const rows = (await call('get_run_results', { runId: s.runId, limit: 200 })).json;
   const all = [];
   for (let o = 0; o < rows.total; o += 200) all.push(...(await call('get_run_results', { runId: s.runId, limit: 200, offset: o })).json.rows);
-  const by = (u) => new Set(all.filter((r) => r.inputTwitterProfileUrl === u).map((r) => r.twProfileUrl));
+  assert.deepEqual(Object.keys(all[0]).slice(0, 3), ['Input', 'Status', 'Message']);
+  assert.equal(Object.keys(all[0]).at(-1), 'Raw result');
+  const by = (u) => new Set(all.filter((r) => r['Input Twitter Profile Url'] === u).map((r) => r['Profile URL']));
   const a = by('https://x.com/a'), b = by('https://x.com/b');
   assert.equal(a.size, 200);
   const both = [...a].filter((x) => b.has(x)).length;
